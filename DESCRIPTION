@@ -1,0 +1,16 @@
+Package: galahr
+Type: Package
+Title: A GUI to assist learning about high dimensions in R
+Version: 0.1.0
+Authors@R: c(person("Ursula", "Laa", email = "ursula.laa@monash.edu", role = c("aut", "cre")),
+             person("Dianne", "Cook", email = "dicook@monash.edu", role = "aut"))
+Description: A graphical interface to tourr using Shiny and
+    plotly to explore high dimensional distributions through
+    dynamic 2-d projections.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    tourr,
+    shiny,
+    
