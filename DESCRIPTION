@@ -13,4 +13,20 @@ LazyData: true
 Imports:
     tourr,
     shiny,
+    plotly,
+    shinythemes,
+    RColorBrewer,
+    ggplot2,
+    dplyr,
+    htmltools,
+    tibble,
+    magrittr,
+    geozoo,
+    grDevices,
+    stats
+Suggests:
+    minerva,
+    binostics,
+    mbgraphic,
+    ochRe
     
