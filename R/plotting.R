@@ -1,9 +1,20 @@
-# some definitions used when making the plots
-m <- list(color = toRGB("black"))
-mRed<- list(color = toRGB("red"))
-m2 <- list(color = toRGB("black", 0.2))
-m3 <- list(color = toRGB("black", 0)) #invisible marker
+#' Generating marker styles for plotly traces.
+#'
+#' @param col Marker color as string (black, red).
+#' @param a Transperancy (default is not transperant.)
+#' @return List formatted as required for plotly marker style.
+#' @keywords internal
+getMarker <- function(col, a=NULL){
+  if(is.null(a)) return(list(color = toRGB(col)))
+  list(color = toRGB(col, a))
+}
 
+#' Mapping grouping to color.
+#'
+#' @param gr Vector containing group assignment for each entry.
+#' @return Named list containing assigned colors ("color")
+#'     and list of colors ("col")
+#' @keywords internal
 colorList <- function(gr){
   n <- length(unique(gr))
   col <- RColorBrewer::brewer.pal(n, "Dark2")
@@ -11,8 +22,15 @@ colorList <- function(gr){
   list(color=colL, col=col)
 }
 
-cubeLine <- list(color= toRGB("gray"),
+#' Formatted line style for drawing the cube outline for plotly.
+#'
+#' @keywords internal
+cubeLineStyle <- list(color= toRGB("gray"),
                  width = 0.5)
+
+#' Formatted empty axis style for plotly.
+#'
+#' @keywords internal
 noAxis = list(
   title = "",
   zeroline = FALSE,
@@ -21,14 +39,11 @@ noAxis = list(
   showgrid = FALSE
 )
 
-noMargin <- list(
-  l = 20,
-  r = 20,
-  b = 20,
-  t = 0,
-  pad = 1
-)
-
+#' Formatted empty axis style with fixed range used for tour plotting.
+#'
+#' @param halfRange Axis range will be between -/+ halfRange.
+#' @return List formatted as required for plotly axis style.
+#' @keywords internal
 tourAxis <- function(halfRange){
   tAxis <- list(
     range = c(-halfRange,halfRange),
@@ -72,13 +87,13 @@ customLegend <- function(labs, col, halfRange){
 #' @return plotly visualisation
 #' @export
 plotly_tour <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
-  if(red){scatterM <- mRed}
-  else{scatterM <- m}
+  if(red){scatterM <- getMarker("red")}
+  else{scatterM <- getMarker("black")}
   tAxis <- tourAxis(halfRange)
   pRet <- plotly::plot_ly(type = "scatter") %>%
     # first trace is line connecting cube points
     plotly::add_trace(data = cubeData, x=~V1, y=~V2, inherit = FALSE,
-                      type = "scatter", mode="lines", line=cubeLine) %>%
+                      type = "scatter", mode="lines", line=cubeLineStyle) %>%
     #second trace is scatter plot of projected data points
     plotly::add_trace(data = scatterData, x=~V1, y=~V2,
                       marker=scatterM, mode="markers", inherit = FALSE,
@@ -109,7 +124,7 @@ plotly_tour_grouped <- function(scatterData, cubeData, hoverData, halfRange, gr)
   pRet <- plotly::plot_ly(type = "scatter") %>%
     # first trace is line connecting cube points
     plotly::add_trace(data = cubeData, x=~V1, y=~V2, inherit = FALSE,
-                      type = "scatter", mode="lines", line=cubeLine,
+                      type = "scatter", mode="lines", line=cubeLineStyle,
                       showlegend = FALSE) %>%
     #second trace is scatter plot of projected data points with custom marker list for grouping
     plotly::add_trace(data = scatterData, x=~V1, y=~V2,
@@ -140,13 +155,13 @@ plotly_tour_grouped <- function(scatterData, cubeData, hoverData, halfRange, gr)
 plotly_1d <- function(d1, d2, markerD1=NULL){
   if(nrow(d2)>0){y2 = c(0)}
   else{y2 = NULL}
-  if(is.null(markerD1)){markerD1 <- m}
+  if(is.null(markerD1)){markerD1 <- getMarker("black")}
   varList <- colnames(d1)
   cplots <- lapply(varList, function(var) {
     plotly::plot_ly(d1, y = c(0), x = stats::as.formula(paste0("~", var)),
                     mode = "markers", marker = markerD1, type = "scatter") %>%
       plotly::add_trace(data=d2, y=y2, x=stats::as.formula(paste0("~", var)),
-                marker=m3) %>%
+                marker=getMarker("black",0)) %>%
       plotly::layout(dragmode = "select", yaxis = noAxis, showlegend=FALSE,
                      annotations =list(
                        text = paste0(var),
@@ -182,11 +197,11 @@ plotly_axes <- function(xVec, yVec, paramList){
       list(type = 'circle',
            xref = 'x', x0 = -1, x1 = 1,
            yref = 'y', y0 = -1, y1 = 1,
-           line = m),
+           line = getMarker("black")),
       list(type = 'rect',
            xref = 'x', x0 = -1.5, x1 = 1.5,
            yref = 'y', y0 = -1.5, y1 = 1.5,
-           line = m))) %>%
+           line = getMarker("black")))) %>%
     plotly::add_annotations(x = 1.1*xVec,
                             y = 1.1*yVec,
                             text = paramList,
@@ -196,60 +211,72 @@ plotly_axes <- function(xVec, yVec, paramList){
   return(plotlyAxes)
 }
 
+#' Generating the ggplot timeline display.
+#'
+#' @param anchors Anchor plane indexes in the timeline
+#' @param current Current projection index in the timeline.
+#' @param maxT Final projection index limiting the timeline axis.
+#' @param breaks Breaks for labelling timeline axis.
+#' @param indexVals Projection pursuit index value as function of time.
+#'     (default is NULL)
+#' @return ggplot visualisation of timeline
+#' @export
 ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
-  timelinePlot <- ggplot() +
-    geom_point(mapping = aes(x=anchors, y=0), color="red") +
-    geom_point(mapping = aes(x=current, y=0)) +
-    xlim(0,maxT) +
-    theme_void() +
-    geom_text(mapping = aes(x=breaks, y=0, label=breaks))
+  timelinePlot <- ggplot2::ggplot() +
+    ggplot2::geom_point(mapping = ggplot2::aes(x=anchors, y=0), color="red") +
+    ggplot2::geom_point(mapping = ggplot2::aes(x=current, y=0)) +
+    ggplot2::xlim(0,maxT) +
+    ggplot2::theme_void() +
+    ggplot2::geom_text(mapping = ggplot2::aes(x=breaks, y=0, label=breaks))
     if(!is.null(indexVals)){
       timelinePlot <- timelinePlot +
-        geom_line(mapping = aes(x=c(0,maxT), y=c(0,0)), color="gray") +
-        geom_line(mapping = aes(x=c(0,maxT), y=c(1,1)), color="gray") +
-        geom_line(mapping = aes(x=1:maxT, y=as.vector(indexVals))) +
-        ylim(-0.1,1.1)
+        ggplot2::geom_line(mapping = ggplot2::aes(x=c(0,maxT), y=c(0,0)), color="gray") +
+        ggplot2::geom_line(mapping = ggplot2:aes(x=c(0,maxT), y=c(1,1)), color="gray") +
+        ggplot2::geom_line(mapping = ggplot2::aes(x=1:maxT, y=as.vector(indexVals))) +
+        ggplot2::ylim(-0.1,1.1)
     }
   return(timelinePlot)
 }
 
+#' Generating the ggplot coverage display.
+#'
+#' @param pcaRes Results from \code{\link{fullTourPCA}}
+#' @param n Number of input parameters
+#' @param i Index of current projection
+#' @return ggplot visualisation of coverage display.
+#' @export
 coveragePlot <- function(pcaRes, n, i){
   ntot <- nrow(pcaRes$x)
-  x <- as.tibble(pcaRes$x) %>%
-    mutate(t = "data")
+  x <- dplyr::as_tibble(pcaRes$x) %>%
+    dplyr::mutate(t = "data")
   x$t[ntot-n:ntot] <- "anchor"
-  ret <- ggplot(x, aes(PC1, PC2, color=t)) +
-    geom_point() +
-    geom_point(aes(x=x$PC1[2*i], y=x$PC2[2*i]), color="black") +
-    geom_point(aes(x=x$PC1[2*i-1], y=x$PC2[2*i-1]), color="black") +
-    theme_void() +
-    guides(color=FALSE)
+  ret <- ggplot2::ggplot(x, aes(PC1, PC2, color=t)) +
+    ggplot2::geom_point() +
+    ggplot2::geom_point(ggplot2::aes(x=x$PC1[2*i], y=x$PC2[2*i]), color="black") +
+    ggplot2::geom_point(ggplot2::aes(x=x$PC1[2*i-1], y=x$PC2[2*i-1]), color="black") +
+    ggplot2::theme_void() +
+    ggplot2::guides(color=FALSE)
   return(ret)
 }
 
-coveragePlotMDS <- function(mdsRes, n){
-  ntot <- nrow(mdsRes$points)
-  x <- as.tibble(mdsRes$points) %>%
-    mutate(t = "data")
-  x$t[ntot-n:ntot] <- "anchor"
-  ret <- ggplot(x, aes(V1, V2, color=t)) +
-    geom_point() +
-    theme_void() +
-    guides(color=FALSE)
-  return(ret)
-}
-
+#' Update all plots to current projection.
+#'
+#' @param rv Reactive value container
+#' @param session shiny session
+#' @param input shiny input container
+#' @param output shiny output container
+#' @keywords internal
 updatePlots <- function(rv, session, input, output){
   updateReactiveData(rv)
-  plotlyProxy("tour",session) %>%
-    plotlyProxyInvoke("restyle", list(x = list(rv$cdata$V1), y = list(rv$cdata$V2)),list(2)) %>%
-    plotlyProxyInvoke("restyle", list(x = list(rv$cubeLine$V1), y = list(rv$cubeLine$V2)),list(1))
-  output$ggtimeline <- renderPlot(ggtimeline(rv$anchors, rv$t, rv$tmax, rv$timelineAxis, rv$pathIndex))
+  plotly::plotlyProxy("tour",session) %>%
+    plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cdata$V1), y = list(rv$cdata$V2)),list(2)) %>%
+    plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cubeLine$V1), y = list(rv$cubeLine$V2)),list(1))
+  output$ggtimeline <- shiny::renderPlot(ggtimeline(rv$anchors, rv$t, rv$tmax, rv$timelineAxis, rv$pathIndex))
   # redraw axes
   xVec <- rv$fullTour[[rv$t]][,1]
   yVec <- rv$fullTour[[rv$t]][,2]
   plotlyAxes <- plotly_axes(xVec, yVec, input$parameters)
-  output$axes <- renderPlotly(plotlyAxes)
+  output$axes <- plotly::renderPlotly(plotlyAxes)
   output$coverageDisplay <-
-    renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), rv$t))
+    shiny::renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), rv$t))
 }
