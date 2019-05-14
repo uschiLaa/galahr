@@ -8,9 +8,9 @@
 #' }
 launchApp <- function(paramDF = NULL) {
   if (is.null(paramDF)) {
-    load("example.rda")
-    paramDF <- exampleParam
+    paramDF <- geozooData
   }
+  print(paramDF)
   params <- names(paramDF)
   npoint <- nrow(paramDF)
   nparams <- min(ncol(paramDF), 6)

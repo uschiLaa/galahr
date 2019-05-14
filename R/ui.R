@@ -21,7 +21,7 @@ tabInput <- function(params){
           "parameters",
           label = "Choose parameters to display",
           choices = params,
-          selected = params[1:nparams]
+          selected = params[1:length(params)]
           ),
         shiny::checkboxInput("rescale", "Rescale", value = TRUE),
         shiny::selectInput("tourType", "Select tour type",
@@ -29,7 +29,7 @@ tabInput <- function(params){
                                        "Planned tour", "Little tour", "Local tour"),
                            selected = "Grand tour"),
         shiny::conditionalPanel('input.tourType=="Guided tour"',
-                                selectInput("tourIndex", "Select index function",
+                                shiny::selectInput("tourIndex", "Select index function",
                                             choices = guidedTourOptions)),
         shiny::conditionalPanel('input.tourType=="Grand tour" || input.tourType=="Little tour"
                                 || input.tourType=="Local tour"',
@@ -149,6 +149,6 @@ ui <- function(params, npoint){
   theme = shinythemes::shinytheme("simplex"),
   shiny::navbarPage(
     "galahr",
-    tabInput(),
-    tabResults()))
+    tabInput(params),
+    tabResults(npoint)))
 }
