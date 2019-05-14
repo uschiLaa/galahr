@@ -1,25 +1,59 @@
-#for easy editing we define tour options and matching to functions for guided tour indices here
-#if index name is not found in getGuidedTour, return default (set to holes index)
+#' List of names for all available guided tour index functions.
+#'
+#' @keywords internal
 guidedTourOptions <- c("cmass", "holes", "Skinny", "Striated", "Convex", "Clumpy",
                        "splines2d", "dcor2d", "MIC", "TIC")
+#FIXME modify list when relevant packages (from suggests field) are not present
+
+
+#' List of names for all available guided tour index functions with grouping.
+#'
+#' @keywords internal
 groupedIndex <- c("lda_pp", "pda_pp")
+
+#' Taking guided tour index name and returning corresponding guided tour
+#'
+#' @param indexName Index name from \code{\link{guidedTourOptions}}
+#' @param grId Class to be used when using \code{\link{groupedIndex}}
+#' @return guided_tour with corresponding index function
+#' @export
 getGuidedTour <- function(indexName, grId=NA){
-  if(indexName=="cmass"){return(guided_tour(cmass()))}
-  if(indexName=="holes"){return(guided_tour(holes()))}
-  if(indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){return(guided_tour(scags(indexName)))}
-  if(indexName=="splines2d"){return(guided_tour(splineIndex()))}
-  if(indexName=="dcor2d"){return(guided_tour(dcorIndex()))}
-  if(indexName %in% c("MIC","TIC")){return(guided_tour(mineIndex(indexName)))}
-  if(indexName=="lda_pp"){return(guided_tour(lda_pp(grId)))}
-  if(indexName=="pda_pp"){return(guided_tour(pda_pp(grId)))}
-  return(guided_tour(holes))
+  if(indexName=="cmass"){return(tourr::guided_tour(tourr::cmass()))}
+  if(indexName=="holes"){return(tourr::guided_tour(tourr::holes()))}
+  if(indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
+    return(tourr::guided_tourr(scags(indexName)))
+    }
+  if(indexName=="splines2d"){return(tourr::guided_tour(splineIndex()))}
+  if(indexName=="dcor2d"){return(tourr::guided_tour(dcorIndex()))}
+  if(indexName %in% c("MIC","TIC")){
+    return(tourr::guided_tour(mineIndex(indexName)))
+    }
+  if(indexName=="lda_pp"){return(tourr::guided_tour(tourr::lda_pp(grId)))}
+  if(indexName=="pda_pp"){return(tourr::guided_tour(tourr::pda_pp(grId)))}
+  return(tourr::guided_tour(tourr::holes()))
 }
-getPathIndex <- function(fullTour, indexName){
-  if(indexName=="cmass"){return(path_index(fullTour, cmass()))}
-  if(indexName=="holes"){return(path_index(fullTour, holes()))}
-  if(indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){return(path_index(fullTour, scags(indexName)))}
-  if(indexName=="splines2d"){return(path_index(fullTour, splineIndex()))}
-  if(indexName=="dcor2d"){return(path_index(fullTour, dcorIndex()))}
-  if(indexName %in% c("MIC","TIC")){return(path_index(fullTour, mineIndex(indexName)))}
+
+#' Taking interpolated tour path and index name and returning path index
+#'
+#'
+#'
+#' @param fullTour Interpolated tour path
+#' @param indexName Index name from \code{\link{guidedTourOptions}}
+#' @param grId Class to be used when using \code{\link{groupedIndex}}
+#' @return Index values over the tour history
+#' @export
+getPathIndex <- function(fullTour, indexName, grId=NA){
+  if(indexName=="cmass"){return(tourr::path_index(fullTour, tourr::cmass()))}
+  if(indexName=="holes"){return(tourr::path_index(fullTour, tourr::holes()))}
+  if(indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
+    return(tourr::path_index(fullTour, scags(indexName)))
+    }
+  if(indexName=="splines2d"){return(tourr::path_index(fullTour, splineIndex()))}
+  if(indexName=="dcor2d"){return(tourr::path_index(fullTour, dcorIndex()))}
+  if(indexName %in% c("MIC","TIC")){
+    return(tourr::path_index(fullTour, mineIndex(indexName)))
+    }
+  if(indexName=="lda_pp"){return(tourr::path_index(fullTour, tourr::lda_pp(grId)))}
+  if(indexName=="pda_pp"){return(tourr::path_index(fullTour, tourr::pda_pp(grId)))}
   return(NULL)
 }

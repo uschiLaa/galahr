@@ -5,8 +5,8 @@
 #' @return List formatted as required for plotly marker style.
 #' @keywords internal
 getMarker <- function(col, a=NULL){
-  if(is.null(a)) return(list(color = toRGB(col)))
-  list(color = toRGB(col, a))
+  if(is.null(a)) return(list(color = plotly::toRGB(col)))
+  list(color = plotly::toRGB(col, a))
 }
 
 #' Mapping grouping to color.
@@ -25,7 +25,7 @@ colorList <- function(gr){
 #' Formatted line style for drawing the cube outline for plotly.
 #'
 #' @keywords internal
-cubeLineStyle <- list(color= toRGB("gray"),
+cubeLineStyle <- list(color= plotly::toRGB("gray"),
                  width = 0.5)
 
 #' Formatted empty axis style for plotly.
