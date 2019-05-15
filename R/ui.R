@@ -109,7 +109,7 @@ tabResults <- function(npoint){
                                   )
                                 ),
         htmltools::div(style = "display:inline-block",
-                       plotlyOutput("axes", width = 200, height = 200)
+                       plotly::plotlyOutput("axes", width = 200, height = 200)
                        ),
         shiny::plotOutput("coverageDisplay", width = 200, height = 200),
         shiny::conditionalPanel('input.displayType=="linked brushing"',

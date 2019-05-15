@@ -35,10 +35,6 @@ readInput <- function(file1, rv, output, session){
                                   "parameters",
                                   choices = names(rv$d),
                                   selected = names(rv$d[1:nparam]))
-  shiny::updateNumericInput(session,
-                            "sampleSize",
-                            value = rv$npoint,
-                            max = rv$npoint)
   if (sum(rv$groupVars)) {
     shiny::updateSelectInput(session,
                              "groupVar",
@@ -48,4 +44,8 @@ readInput <- function(file1, rv, output, session){
                              "groupVar",
                              choices = c("None"))
   }
+  shiny::updateNumericInput(session,
+                            "sampleSize",
+                            value = rv$npoint,
+                            max = rv$npoint)
 }

@@ -50,6 +50,7 @@ initializeReactive <- function(paramDF){
   rv$update <- NULL
   rv$d <- paramDF
   rv$npoint <- nrow(paramDF)
+  shiny::isolate(splitInput(paramDF, rv))
   return(rv)
 }
 

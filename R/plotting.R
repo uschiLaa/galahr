@@ -190,7 +190,7 @@ plotly_axes <- function(xVec, yVec, paramList){
   plotlyAxes <- plotly::plot_ly(type="scatter", mode = "lines")
   for(i in 1:length(xVec)){
     plotlyAxes <- plotlyAxes %>%
-      plotly::add_trace(x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=m)
+      plotly::add_trace(x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=getMarker("black"))
   }
   plotlyAxes <- plotlyAxes %>%
     plotly::layout(xaxis=noAxis, yaxis=noAxis, showlegend = FALSE, shapes = list(
@@ -222,6 +222,7 @@ plotly_axes <- function(xVec, yVec, paramList){
 #' @return ggplot visualisation of timeline
 #' @export
 ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
+  breaks <- breaks[breaks<maxT] # throw out breaks above maxT
   timelinePlot <- ggplot2::ggplot() +
     ggplot2::geom_point(mapping = ggplot2::aes(x=anchors, y=0), color="red") +
     ggplot2::geom_point(mapping = ggplot2::aes(x=current, y=0)) +
@@ -250,7 +251,7 @@ coveragePlot <- function(pcaRes, n, i){
   x <- dplyr::as_tibble(pcaRes$x) %>%
     dplyr::mutate(t = "data")
   x$t[ntot-n:ntot] <- "anchor"
-  ret <- ggplot2::ggplot(x, aes(PC1, PC2, color=t)) +
+  ret <- ggplot2::ggplot(x, ggplot2::aes(PC1, PC2, color=t)) +
     ggplot2::geom_point() +
     ggplot2::geom_point(ggplot2::aes(x=x$PC1[2*i], y=x$PC2[2*i]), color="black") +
     ggplot2::geom_point(ggplot2::aes(x=x$PC1[2*i-1], y=x$PC2[2*i-1]), color="black") +

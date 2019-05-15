@@ -10,14 +10,25 @@ launchApp <- function(paramDF = NULL) {
   if (is.null(paramDF)) {
     paramDF <- geozooData
   }
-  print(paramDF)
-  params <- names(paramDF)
+
+  params <- names(paramDF)[sapply(paramDF, is.numeric)]
   npoint <- nrow(paramDF)
-  nparams <- min(ncol(paramDF), 6)
 
 
   server <- function(input, output, session) {
-    rv <- shiny::initializeReactive(paramDF)
+
+    rv <- initializeReactive(paramDF)
+
+    shiny::isolate({
+      if (sum(rv$groupVars)) {
+        shiny::updateSelectInput(session,
+                               "groupVar",
+                               choices = names(rv$groups))}
+      else {
+        shiny::updateSelectInput(session,
+                                 "groupVar",
+                                 choices = c("None"))
+      }})
 
     shiny::observeEvent(input$file1, {
       if (is.null(input$file1)) {
@@ -252,10 +263,10 @@ launchApp <- function(paramDF = NULL) {
       }
     }, ignoreInit = TRUE)
 
-    shiny::observeEvent(c(event_data("plotly_selected"), input$selectedOnly), {
+    shiny::observeEvent(c(plotly::event_data("plotly_selected"), input$selectedOnly), {
       if (!input$displayType=="linked brushing")
         return()
-      if (is_null(plotly::event_data("plotly_selected")))
+      if (is.null(plotly::event_data("plotly_selected")))
         return()
       newSelection <- plotly::event_data("plotly_selected") %>%
         dplyr::filter(isEven(curveNumber)) # only even curve numbers are in current data sample
