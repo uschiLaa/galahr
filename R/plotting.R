@@ -272,12 +272,16 @@ updatePlots <- function(rv, session, input, output){
   plotly::plotlyProxy("tour",session) %>%
     plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cdata$V1), y = list(rv$cdata$V2)),list(2)) %>%
     plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cubeLine$V1), y = list(rv$cubeLine$V2)),list(1))
+
   output$ggtimeline <- shiny::renderPlot(ggtimeline(rv$anchors, rv$t, rv$tmax, rv$timelineAxis, rv$pathIndex))
+
   # redraw axes
   xVec <- rv$fullTour[[rv$t]][,1]
   yVec <- rv$fullTour[[rv$t]][,2]
   plotlyAxes <- plotly_axes(xVec, yVec, input$parameters)
   output$axes <- plotly::renderPlotly(plotlyAxes)
+
   output$coverageDisplay <-
     shiny::renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), rv$t))
+
 }

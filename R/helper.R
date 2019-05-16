@@ -110,13 +110,14 @@ formatProj <- function(proj, params, idx){
 #' @param rv Reactive value container
 #' @keywords internal
 updateReactiveData <- function(rv){
-  rv$cdata <- dplyr::as_tibble(rv$selection %*% rv$fullTour[[rv$t]])
-  rv$cubePointProjOrig <- dplyr::as_tibble(rv$cubePoints %*% rv$fullTour[[rv$t]])
+  rv$cdata <- (rv$selection %*% rv$fullTour[[rv$t]])
+  rv$cubePointProjOrig <- (rv$cubePoints %*% rv$fullTour[[rv$t]])
   centeredPoints <- centerAll(rv$cdata, rv$cubePointProjOrig)
   rv$cdata <- centeredPoints$data
   cubePointProj <- centeredPoints$cube
   chidx <- grDevices::chull(cubePointProj)
-  rv$cubeLine <- dplyr::as_tibble(cubePointProj[c(chidx, chidx[1]),])
+  rv$cubeLine <- (cubePointProj[c(chidx, chidx[1]),])
+
 }
 
 #' PCA over the projection vectors in the tour sequence.

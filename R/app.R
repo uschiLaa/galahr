@@ -333,13 +333,14 @@ launchApp <- function(paramDF = NULL) {
           rv$on <- FALSE
           return()})
       }
-      shiny::invalidateLater(200)
+      shiny::invalidateLater(10)
       shiny::isolate({
         updatePlots(rv, session, input, output)
         # keeping track of projection index, reset to 1 when reaching final projection
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })
+
     })
 
 
