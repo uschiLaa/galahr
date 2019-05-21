@@ -9,17 +9,29 @@ getMarker <- function(col, a=NULL){
   list(color = plotly::toRGB(col, a))
 }
 
+#' Generating smaller marker styles for plotly traces.
+#'
+#' @param col Marker color as string (black, red).
+#' @param a Transperancy (default is not transperant.)
+#' @return List formatted as required for plotly marker style.
+#' @keywords internal
 getSmallMarker <- function(col, a=NULL){
   if(is.null(a)) return(list(color = plotly::toRGB(col), size=5))
   list(color = plotly::toRGB(col, a))
 }
 
+#' Formatted margins for the timeline in plotly.
+#'
+#' @keywords internal
 plotlyMargin <- list(l= 5,
                      r= 15,
                      t= 0,
                      b= 20
                      )
 
+#' Formatted margins for the coverage display in plotly.
+#'
+#' @keywords internal
 coverageDispMargin <- list(l= 5,
                          r= 5,
                          t= 5,
@@ -56,6 +68,12 @@ noAxis = list(
   showgrid = FALSE
 )
 
+#' Formatted empty axis style with fixed range used for timeline plotting.
+#'
+#' @param axmin Lower limit of axis
+#' @param axmax Upper limit of axis
+#' @return List formatted as required for plotly axis style.
+#' @keywords internal
 noAxisRange <- function(axmin, axmax){
   list(
     range = c(axmin, axmax),
@@ -84,6 +102,12 @@ tourAxis <- function(halfRange){
   return(tAxis)
 }
 
+#' Formatted axis style with fixed range (0, xMax+1) and breaks.
+#'
+#' @param xMax Upper limit for axis range
+#' @param breaks Values for axis ticks
+#' @return List formatted as required for plotly axis style.
+#' @keywords internal
 timelineAxis<- function(xMax, breaks){
   tAxis <- list(
     range = c(0, xMax+1),
@@ -334,7 +358,5 @@ updatePlots <- function(rv, session, input, output){
   plotly::plotlyProxy("coverageDisplay",session) %>%
     plotly::plotlyProxyInvoke("restyle", list(x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
                                               y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),list(3))
-  #output$coverageDisplay <-
-  #  shiny::renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), rv$t))
 
 }
