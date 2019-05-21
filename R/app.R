@@ -115,7 +115,7 @@ launchApp <- function(paramDF = NULL) {
                    rv$tourPCA <-
                      fullTourPCA(rv$fullTour, length(input$parameters))
                    output$coverageDisplay <-
-                     shiny::renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), 1))
+                     plotly::renderPlotly(coveragePlot(rv$tourPCA, length(input$parameters), 1))
                    rv$selection <- rv$dataMatrix
                    rv$resetSelection <- rv$dataMatrix
                    rv$resetSample <- FALSE
@@ -123,7 +123,7 @@ launchApp <- function(paramDF = NULL) {
                    rv$t <- 1
                    rv$timelineAxis <- pretty(c(1, rv$tmax))
                    output$ggtimeline <-
-                     shiny::renderPlot(ggtimeline(rv$anchors, 1, rv$tmax, rv$timelineAxis, rv$pathIndex))
+                     plotly::renderPlotly(ggtimeline(rv$anchors, 1, rv$tmax, rv$timelineAxis, rv$pathIndex))
                    # for use when selecting samples, define separate data frames
                    rv$inSample <- rv$d
                    rv$outOfSample <-rv$d[0,]
@@ -333,7 +333,7 @@ launchApp <- function(paramDF = NULL) {
           rv$on <- FALSE
           return()})
       }
-      shiny::invalidateLater(10)
+      shiny::invalidateLater(20)
       shiny::isolate({
         updatePlots(rv, session, input, output)
         # keeping track of projection index, reset to 1 when reaching final projection

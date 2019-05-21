@@ -111,7 +111,10 @@ tabResults <- function(npoint){
         htmltools::div(style = "display:inline-block",
                        plotly::plotlyOutput("axes", width = 200, height = 200)
                        ),
-        shiny::plotOutput("coverageDisplay", width = 200, height = 200),
+        htmltools::div(style = "display:inline-block",
+                       plotly::plotlyOutput("coverageDisplay", width = 200, height = 200)
+        ),
+        #shiny::plotOutput("coverageDisplay", width = 200, height = 200),
         shiny::conditionalPanel('input.displayType=="linked brushing"',
                                 shiny::verbatimTextOutput("range")),
         shiny::verbatimTextOutput("projPrint")
@@ -121,11 +124,14 @@ tabResults <- function(npoint){
         htmltools::div(style = "display:inline-block",
                        plotly::plotlyOutput("tour", width = 750, height = 750)
                        ),
-        shiny::plotOutput("ggtimeline",
-                          click = "timelineClick",
-                          width = 750,
-                          height = 50
-                          )
+        htmltools::div(style = "display:inline-block",
+                       plotly::plotlyOutput("ggtimeline", width = 750, height = 50)
+        )
+        #shiny::plotOutput("ggtimeline",
+        #                  click = "timelineClick",
+        #                  width = 750,
+        #                  height = 50
+        #                  )
         ),
       shiny::column(
         width = 3,

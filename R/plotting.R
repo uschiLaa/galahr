@@ -9,6 +9,17 @@ getMarker <- function(col, a=NULL){
   list(color = plotly::toRGB(col, a))
 }
 
+getSmallMarker <- function(col, a=NULL){
+  if(is.null(a)) return(list(color = plotly::toRGB(col), size=5))
+  list(color = plotly::toRGB(col, a))
+}
+
+plotlyMargin <- list(l= 5,
+                     r= 15,
+                     t= 0,
+                     b= 20
+                     )
+
 #' Mapping grouping to color.
 #'
 #' @param gr Vector containing group assignment for each entry.
@@ -39,6 +50,17 @@ noAxis = list(
   showgrid = FALSE
 )
 
+noAxisRange <- function(axmin, axmax){
+  list(
+    range = c(axmin, axmax),
+    title = "",
+    zeroline = FALSE,
+    showline = FALSE,
+    showticklabels = FALSE,
+    showgrid = FALSE
+    )
+}
+
 #' Formatted empty axis style with fixed range used for tour plotting.
 #'
 #' @param halfRange Axis range will be between -/+ halfRange.
@@ -52,6 +74,21 @@ tourAxis <- function(halfRange){
     showline = FALSE,
     showticklabels = FALSE,
     showgrid = FALSE
+  )
+  return(tAxis)
+}
+
+timelineAxis<- function(xMax, breaks){
+  tAxis <- list(
+    range = c(0, xMax+1),
+    title = "",
+    zeroline = FALSE,
+    showline = FALSE,
+    tickvals = breaks,
+    ticks = "inside",
+    tickfont = list(size = 10),
+    showgrid = FALSE,
+    automargin = TRUE
   )
   return(tAxis)
 }
@@ -223,19 +260,13 @@ plotly_axes <- function(xVec, yVec, paramList){
 #' @export
 ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   breaks <- breaks[breaks<maxT] # throw out breaks above maxT
-  timelinePlot <- ggplot2::ggplot() +
-    ggplot2::geom_point(mapping = ggplot2::aes(x=anchors, y=0), color="red") +
-    ggplot2::geom_point(mapping = ggplot2::aes(x=current, y=0)) +
-    ggplot2::xlim(0,maxT) +
-    ggplot2::theme_void() +
-    ggplot2::geom_text(mapping = ggplot2::aes(x=breaks, y=0, label=breaks))
-    if(!is.null(indexVals)){
-      timelinePlot <- timelinePlot +
-        ggplot2::geom_line(mapping = ggplot2::aes(x=c(0,maxT), y=c(0,0)), color="gray") +
-        ggplot2::geom_line(mapping = ggplot2:aes(x=c(0,maxT), y=c(1,1)), color="gray") +
-        ggplot2::geom_line(mapping = ggplot2::aes(x=1:maxT, y=as.vector(indexVals))) +
-        ggplot2::ylim(-0.1,1.1)
-    }
+  timelinePlot <- plotly::plot_ly(type = "scatter") %>%
+    plotly::add_trace(y = c(0.5), x = anchors,
+                      mode = "markers", marker = getSmallMarker("red"), type = "scatter") %>%
+    plotly::add_trace(y = c(0.5), x = c(current,current), #duplicating point to make restyle work
+                      mode = "markers", marker = getSmallMarker("black"), type = "scatter") %>%
+    plotly::layout(xaxis=timelineAxis(maxT, breaks), yaxis = noAxisRange(0,1),
+                   showlegend = FALSE, margin = plotlyMargin)
   return(timelinePlot)
 }
 
@@ -257,6 +288,8 @@ coveragePlot <- function(pcaRes, n, i){
     ggplot2::geom_point(ggplot2::aes(x=x$PC1[2*i-1], y=x$PC2[2*i-1]), color="black") +
     ggplot2::theme_void() +
     ggplot2::guides(color=FALSE)
+  ret <- plotly::ggplotly(ret) %>%
+    plotly::layout(xaxis=noAxis, yaxis = noAxis, showlegend = FALSE)
   return(ret)
 }
 
@@ -273,7 +306,9 @@ updatePlots <- function(rv, session, input, output){
     plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cdata$V1), y = list(rv$cdata$V2)),list(2)) %>%
     plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cubeLine$V1), y = list(rv$cubeLine$V2)),list(1))
 
-  output$ggtimeline <- shiny::renderPlot(ggtimeline(rv$anchors, rv$t, rv$tmax, rv$timelineAxis, rv$pathIndex))
+  #reminder: restyle only works for more than one point in the trace
+  plotly::plotlyProxy("ggtimeline",session) %>%
+    plotly::plotlyProxyInvoke("restyle", list(x = list(c(rv$t, rv$t))),list(2))
 
   # redraw axes
   xVec <- rv$fullTour[[rv$t]][,1]
@@ -281,7 +316,7 @@ updatePlots <- function(rv, session, input, output){
   plotlyAxes <- plotly_axes(xVec, yVec, input$parameters)
   output$axes <- plotly::renderPlotly(plotlyAxes)
 
-  output$coverageDisplay <-
-    shiny::renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), rv$t))
+  #output$coverageDisplay <-
+  #  shiny::renderPlot(coveragePlot(rv$tourPCA, length(input$parameters), rv$t))
 
 }
