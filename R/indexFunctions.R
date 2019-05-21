@@ -1,10 +1,16 @@
 #' List of names for all available guided tour index functions.
 #'
 #' @keywords internal
-guidedTourOptions <- c("cmass", "holes", "Skinny", "Striated", "Convex", "Clumpy",
-                       "splines2d", "dcor2d", "MIC", "TIC")
-#FIXME modify list when relevant packages (from suggests field) are not present
-
+guidedTourOptions <- c("cmass", "holes")
+if (requireNamespace("binostics", quietly = TRUE)) {
+  guidedTourOptions <- c(guidedTourOptions, "Skinny", "Striated", "Convex", "Clumpy")
+}
+if (requireNamespace("mbgraphic", quietly = TRUE)) {
+  guidedTourOptions <- c(guidedTourOptions, "splines2d", "dcor2d")
+}
+if (requireNamespace("minerva", quietly = TRUE)) {
+  guidedTourOptions <- c(guidedTourOptions, "MIC", "TIC")
+}
 
 #' List of names for all available guided tour index functions with grouping.
 #'
