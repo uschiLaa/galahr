@@ -16,7 +16,6 @@ Imports:
     plotly,
     shinythemes,
     RColorBrewer,
-    ggplot2,
     dplyr,
     htmltools,
     tibble,

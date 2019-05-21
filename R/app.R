@@ -207,8 +207,9 @@ launchApp <- function(paramDF = NULL) {
         shiny::renderText(formatProj(pMat, input$parameters, t))
     })
 
-    shiny::observeEvent(input$timelineClick, {
-      rv$t <- round(input$timelineClick$x)
+    shiny::observeEvent(plotly::event_data("plotly_click"), {
+      d <- event_data("plotly_click")
+      rv$t <- d$x
       updatePlots(rv, session, input, output)
     })
 
