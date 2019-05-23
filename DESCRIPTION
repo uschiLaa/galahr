@@ -27,5 +27,8 @@ Suggests:
     minerva,
     binostics,
     mbgraphic,
-    ochRe
+    ochRe,
+    knitr,
+    rmarkdown
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
