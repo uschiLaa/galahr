@@ -8,7 +8,7 @@
 #' }
 launchApp <- function(paramDF = NULL) {
   if (is.null(paramDF)) {
-    paramDF <- geozooData
+    paramDF <- tsfeatureData
   }
 
   params <- names(paramDF)[sapply(paramDF, is.numeric)]
@@ -108,7 +108,7 @@ launchApp <- function(paramDF = NULL) {
                    }
                    fullTour <- tourr::interpolate(rv$tourPlanes, angle = input$angle)
                    if(input$tourType == "Guided tour"){
-                     rv$pathIndex <- getPathIndex(fullTour, input$tourIndex)
+                     rv$pathIndex <- getPathIndex(fullTour, input$tourIndex, grId)
                    }
                    rv$anchors <- which(attributes(fullTour)$new_basis)
                    rv$fullTour <- as.list(fullTour)
