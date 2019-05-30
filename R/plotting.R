@@ -45,6 +45,11 @@ coverageDispMargin <- list(l= 5,
 #'     and list of colors ("col")
 #' @keywords internal
 colorList <- function(gr){
+  allColors <- TRUE
+  for (c in unique(gr)){
+    if(inherits(try(plotly::toRGB(c), silent=T), "try-error")) allColors <- FALSE
+  }
+  if (allColors) return(list(color=gr, col=unique(gr)))
   n <- length(unique(gr))
   col <- RColorBrewer::brewer.pal(n, "Dark2")
   colL <- col[as.numeric(as.factor(gr))]
