@@ -165,7 +165,7 @@ scags <- function(scagMetricIndex) {
 #' @export
 splineIndex <- function(){
   function(mat){
-    return(mbgraphics::splines2d(mat[,1], mat[,2]))
+    return(mbgraphic::splines2d(mat[,1], mat[,2]))
   }
 }
 

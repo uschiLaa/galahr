@@ -84,8 +84,23 @@ Another example dataset included with this package is `galah`. We can launch the
 m1 <- spinebil::basisMatrix(1,2,6)
 m2 <- spinebil::basisMatrix(3,4,6)
 m3 <- spinebil::basisMatrix(5,6,6)
+# store the planes in list format and save as .rds
 galahPath <- list(m3, m1, m2, m3)
 saveRDS(galahPath, file="galahPath.rds")
   )
   ```
+We can now lauch the app with the `galah` dataset
+ ```{r, eval = FALSE}
+ launchApp(galah)
+ ```
+and open the `input` panel. Again we select the `groups` display option. In the first colum we select the tour type to be "Planned tour" and we upload the previously generated "galahPath.rds" file. We now update the results with the action button at the bottom at the first column and move to the `results` panel to see the planned tour of the `galah` dataset!
 
+### `GW170817`
+
+The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.
+FIXME paper reference to LIGO here?
+We can load the dataset into the app with 
+ ```{r, eval = FALSE}
+ launchApp(GW170817)
+ ```
+Since this is a posterior sample the default display `density` is appropriate for this dataset and we can directly look at the grand tour loaded in the `results` panel. In this display we can now modify the transparancy of the datapoints by selecting alpha. For this example a value around 0.1 is appropriate to distinguish regions of high/low density in the display. We may notice strong association between the parameters m1 and m2. We can return to the `input` panel and change some settings. For example we can remove m2 from the list of parameters, and select the guided tour option. This enables us to select a projection pursuit index to optimise in the guided tour. If the package `mbgraphic` is installed, we can select the `splines2d` index and press "Update results". It will take about a minute to find the guided tour path. Once the optimisation is finished we can replay the guided tour in the results panel. In this case we find a strong functional dependence between multiple of the parameters in the dataset. With the final projection on display, we can come back to the `input` panel once more and select the "Local tour" option to explore the neighborhood of the optimised final projection (remember to press "Update results" before returning to the `results` panels). We could also change the display to "linked brushing" which will allow us to highlight based on the 1-d view in the last column of the `results` panel, or in the tour display.
