@@ -94,6 +94,16 @@ launchApp <- function(paramDF = NULL) {
                    else if(input$tourType == "Planned tour"){
                      pathFile <- input$file2$datapath
                      rv$tourPlanes <- readRDS(pathFile)
+                     # input could be either history array, in which case we don't need to do anything
+                     # or could be a list of matrices defining the planes, in which case we need to plan tour path
+                     if(is.null(attr(rv$tourPlanes, "class"))){
+                       #since planned tour skips first two entries we add random ones
+                       ndim <- nrow(rv$tourPlanes[[1]])
+                       r1 <- tourr::basis_random(ndim)
+                       r2 <- tourr::basis_random(ndim)
+                       rv$tourPlanes <- append(list(r1, r2), rv$tourPlanes)
+                       rv$tourPlanes <- tourr::save_history(rv$dataMatrix, tourr::planned_tour(rv$tourPlanes), rescale = FALSE)
+                   }
                    }
                    else if(input$tourType == "Local tour"){
                      start <- rv$fullTour[[rv$t]]
@@ -188,13 +198,13 @@ launchApp <- function(paramDF = NULL) {
         return()
       }
       pMat <- rv$fullTour[[rv$t]]
-      save(pMat, file = paste0("tour_projection_", rv$t, ".rda"))
+      saveRDS(pMat, file = paste0("tour_projection_", rv$t, ".rds"))
     })
 
     shiny::observeEvent(input$saveAll, {
       if(is.null(rv$tourPlanes)){return()}
       anchorPlanes <- rv$tourPlanes
-      save(anchorPlanes, file = "anchor_planes.rda")
+      saveRDS(anchorPlanes, file = "anchor_planes.rds")
     })
 
     shiny::observeEvent(input$print, {

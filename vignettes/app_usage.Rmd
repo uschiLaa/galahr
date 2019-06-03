@@ -71,3 +71,21 @@ The middle column contains the main result, showing the projected data points in
 Below the main result we show the timeline of the tour path. Points in red indicate anchor points selected by the tour path generator, all other planes result from the interpolation between those planes. The black point shows the position of the current plane in the timeline. When the tour is not playing we can click along the timeline to select a position in the path, this will update the display and the tour will be played from the selected point onwards. This is particularly useful in interaction with the print/save options or when going back to launch a local tour.
 
 The final column contains the 1-d display of all parameter values (including those not selected for the tour display). This is most useful when working with the linked brushing option.
+
+## Usage examples
+
+### `tsfeatureData` 
+By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. This data set contains features (calculated with the `tsfeatures` package) for three types of time series, the type is stored in the `category` variable. By default the app will start up with a grand tour shown in the density display, and up to six variables are selected. For a better overview of this dataset we use the `input` panel, in the second column we select the `groups` display type. In this dataset there is only one categorical variable which is preselected as the grouping variable. We then push the `update results` action button on the bottom of the first column to load the tour with the new input selections. We can now open the `results` tab to inspect the dataset with groups mapped to colour. Interestingly the set of music time series appears to be more similar to air temperature time series than bird songs in this feature space.
+
+### `galah`
+Another example dataset included with this package is `galah`. We can launch the app as `launchApp(galah)` to load it. Again the dataset contains exactly one categorical variable, but in this case the `col` variable lists hex codes which can directly be mapped to the corresponding color when selecting the `groups` display. This dataset is best viewed with a planned tour as shown in the example below.
+ ```{r, eval = FALSE}
+# matrix representation of planes to show in the planned tour
+m1 <- spinebil::basisMatrix(1,2,6)
+m2 <- spinebil::basisMatrix(3,4,6)
+m3 <- spinebil::basisMatrix(5,6,6)
+galahPath <- list(m3, m1, m2, m3)
+saveRDS(galahPath, file="galahPath.rds")
+  )
+  ```
+

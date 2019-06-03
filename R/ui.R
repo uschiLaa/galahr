@@ -21,7 +21,7 @@ tabInput <- function(params){
           "parameters",
           label = "Choose parameters to display",
           choices = params,
-          selected = params[1:length(params)]
+          selected = params[1:min(length(params),6)]
           ),
         shiny::checkboxInput("rescale", "Rescale", value = TRUE),
         shiny::selectInput("tourType", "Select tour type",
