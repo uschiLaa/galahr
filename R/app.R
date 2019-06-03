@@ -3,7 +3,7 @@
 #' @param paramDF input data to load the app with. By default load data from FIXME SOME EXAMPLE
 #' @export
 #' @examples \dontrun{
-#' launch_app()
+#' launchApp()
 #' FIXME example with alternative input data
 #' }
 launchApp <- function(paramDF = NULL) {
