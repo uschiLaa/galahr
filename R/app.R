@@ -39,17 +39,17 @@ launchApp <- function(paramDF = NULL) {
 
     shiny::observeEvent(c(input$displayType,input$groupVar), {
       if ((input$displayType != "groups") | (input$groupVar=="None")){
-        updateSelectInput(session, "tourIndex", choices = guidedTourOptions)}
+        shiny::updateSelectInput(session, "tourIndex", choices = guidedTourOptions)}
       else {
         guidedTourOptionsNew <- c(guidedTourOptions,"lda_pp", "pda_pp")
-        updateSelectInput(session, "tourIndex", choices = guidedTourOptionsNew)
+        shiny::updateSelectInput(session, "tourIndex", choices = guidedTourOptionsNew)
       }
     })
 
 
     shiny::observeEvent(c(input$updateTour, rv$update),
                  {
-                   #first get data, list of tour projections and set some reactive values
+                   #get data, list of projections and set reactive values
                    output$messages <- shiny::renderText(shiny::validate(
                      shiny::need(
                        length(input$parameters) > 2,
@@ -85,24 +85,35 @@ launchApp <- function(paramDF = NULL) {
                      rv$pathIndex <- NULL
                    }
                    else if(input$tourType == "Guided tour"){
-                     if (input$tourIndex %in% groupedIndex) grId <- as.factor(rv$groups[[input$groupVar]])
+                     if (input$tourIndex %in% groupedIndex){
+                       grId <- as.factor(rv$groups[[input$groupVar]])
+                     }
                      else grId <- NA
                      guidedTour <- getGuidedTour(input$tourIndex, grId)
                      rv$tourPlanes <-
-                       tourr::save_history(rv$dataMatrix, guidedTour, rescale = FALSE)
+                       tourr::save_history(
+                         rv$dataMatrix, guidedTour, rescale = FALSE
+                         )
                    }
                    else if(input$tourType == "Planned tour"){
                      pathFile <- input$file2$datapath
                      rv$tourPlanes <- readRDS(pathFile)
-                     # input could be either history array, in which case we don't need to do anything
-                     # or could be a list of matrices defining the planes, in which case we need to plan tour path
+                     # input could be either history array
+                     # in which case we don't need to do anything
+                     # or could be a list of matrices defining the planes
+                     # in which case we need to plan tour path
                      if(is.null(attr(rv$tourPlanes, "class"))){
-                       #since planned tour skips first two entries we add random ones
+                       # since planned tour skips first two entries
+                       # we add random ones
                        ndim <- nrow(rv$tourPlanes[[1]])
                        r1 <- tourr::basis_random(ndim)
                        r2 <- tourr::basis_random(ndim)
                        rv$tourPlanes <- append(list(r1, r2), rv$tourPlanes)
-                       rv$tourPlanes <- tourr::save_history(rv$dataMatrix, tourr::planned_tour(rv$tourPlanes), rescale = FALSE)
+                       rv$tourPlanes <- tourr::save_history(
+                         rv$dataMatrix,
+                         tourr::planned_tour(rv$tourPlanes),
+                         rescale = FALSE
+                         )
                    }
                    }
                    else if(input$tourType == "Local tour"){
@@ -116,16 +127,24 @@ launchApp <- function(paramDF = NULL) {
                                            max_bases = input$nPlanes,
                                            rescale = FALSE)
                    }
-                   fullTour <- tourr::interpolate(rv$tourPlanes, angle = input$angle)
+                   fullTour <- tourr::interpolate(
+                     rv$tourPlanes, angle = input$angle
+                     )
                    if(input$tourType == "Guided tour"){
-                     rv$pathIndex <- getPathIndex(fullTour, input$tourIndex, grId)
+                     #FIXME this is not currently displayed
+                     #fix display or remove computation
+                     rv$pathIndex <- getPathIndex(
+                       fullTour, input$tourIndex, grId
+                       )
                    }
                    rv$anchors <- which(attributes(fullTour)$new_basis)
                    rv$fullTour <- as.list(fullTour)
                    rv$tourPCA <-
                      fullTourPCA(rv$fullTour, length(input$parameters))
                    output$coverageDisplay <-
-                     plotly::renderPlotly(coveragePlot(rv$tourPCA, length(input$parameters), 1))
+                     plotly::renderPlotly(
+                       coveragePlot(rv$tourPCA, length(input$parameters), 1)
+                       )
                    rv$selection <- rv$dataMatrix
                    rv$resetSelection <- rv$dataMatrix
                    rv$resetSample <- FALSE
@@ -133,7 +152,11 @@ launchApp <- function(paramDF = NULL) {
                    rv$t <- 1
                    rv$timelineAxis <- pretty(c(1, rv$tmax))
                    output$ggtimeline <-
-                     plotly::renderPlotly(ggtimeline(rv$anchors, 1, rv$tmax, rv$timelineAxis, rv$pathIndex))
+                     plotly::renderPlotly(
+                       ggtimeline(
+                         rv$anchors, 1, rv$tmax, rv$timelineAxis, rv$pathIndex
+                         )
+                       )
                    # for use when selecting samples, define separate data frames
                    rv$inSample <- rv$d
                    rv$outOfSample <-rv$d[0,]
@@ -153,22 +176,30 @@ launchApp <- function(paramDF = NULL) {
                      ) %>%
                        plotly::layout(title = "Parameter values")
                    })
-                   # calculate projected data and cube points for first projection
+                   # calculate projected data and cube points
+                   # for first projection
                    updateReactiveData(rv)
-                   # hover text should contain all function and parameter values
+                   #hover text should contain all function and parameter values
                    hoverTextDf <- hoverText(rv$d, input$parameters)
                    rv$halfRange <-
                      tourr:::compute_half_range(NULL, rv$dataMatrix, TRUE) * 1.3
                    # now can draw tour display
-                   # different function used when drawing grouped data (map group to color)
-                   if ((input$displayType == "groups") && (input$groupVar!="None")){
+                   # different function used when drawing grouped data
+                   # (mapping group to color)
+                   if (
+                     (input$displayType == "groups") &&
+                     (input$groupVar !=" None")
+                     ){
                      plotlyTour <-
                        plotly_tour_grouped(rv$cdata, rv$cubeLine,
-                                           hoverTextDf, rv$halfRange, rv$groups[[input$groupVar]])
+                                           hoverTextDf, rv$halfRange,
+                                           rv$groups[[input$groupVar]]
+                                           )
                    }
                    else{
                      plotlyTour <-
-                       plotly_tour(rv$cdata, rv$cubeLine, hoverTextDf, rv$halfRange)
+                       plotly_tour(rv$cdata, rv$cubeLine,
+                                   hoverTextDf, rv$halfRange)
                    }
                    output$tour <- plotly::renderPlotly({
                      plotlyTour
@@ -190,7 +221,9 @@ launchApp <- function(paramDF = NULL) {
     shiny::observeEvent(input$alpha, {
       markerCol <- plotly::toRGB("black", input$alpha)
       plotly::plotlyProxy("tour", session) %>%
-        plotly::plotlyProxyInvoke("restyle", marker.color = list(markerCol), list(1))
+        plotly::plotlyProxyInvoke(
+          "restyle", marker.color = list(markerCol), list(1)
+          )
     })
 
     shiny::observeEvent(input$save, {
@@ -218,7 +251,7 @@ launchApp <- function(paramDF = NULL) {
     })
 
     shiny::observeEvent(plotly::event_data("plotly_click"), {
-      d <- event_data("plotly_click")
+      d <- plotly::event_data("plotly_click")
       rv$t <- d$x
       updatePlots(rv, session, input, output)
     })
@@ -251,7 +284,8 @@ launchApp <- function(paramDF = NULL) {
         updateReactiveData(rv)
         if ((input$displayType == "groups") && (input$groupVar!="None")){
           plotlyTour <-
-            plotly_tour_grouped(rv$cdata, rv$cubeLine, hoverTextDf, rv$halfRange,
+            plotly_tour_grouped(rv$cdata, rv$cubeLine, hoverTextDf,
+                                rv$halfRange,
                                 rv$groups[[input$groupVar]][selection])
         }
         else{
@@ -274,7 +308,9 @@ launchApp <- function(paramDF = NULL) {
       }
     }, ignoreInit = TRUE)
 
-    shiny::observeEvent(c(plotly::event_data("plotly_selected"), input$selectedOnly), {
+    shiny::observeEvent(
+      c(plotly::event_data("plotly_selected"), input$selectedOnly),
+      {
       if (!input$displayType=="linked brushing")
         return()
       if (is.null(plotly::event_data("plotly_selected")))
@@ -347,7 +383,8 @@ launchApp <- function(paramDF = NULL) {
       shiny::invalidateLater(20)
       shiny::isolate({
         updatePlots(rv, session, input, output)
-        # keeping track of projection index, reset to 1 when reaching final projection
+        # keeping track of projection index
+        # reset to 1 when reaching final projection
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })

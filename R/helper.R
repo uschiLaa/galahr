@@ -66,7 +66,7 @@ hoverText <- function(d, p){
   for(cP in p){
     cV <- signif(hoverTextDf[[cP]], digits=3)
     cT <- paste0(cP,": ",format(cV, scientific=TRUE))
-    hoverTextDf$paramT=paste(hoverTextDf$paramT,cT,sep="\n")
+    hoverTextDf$paramT <- paste(hoverTextDf$paramT,cT,sep="\n")
   }
   return(hoverTextDf)
 }
@@ -99,7 +99,8 @@ formatProj <- function(proj, params, idx){
   txt <- paste0("Projection ", idx)
   txt <- paste(txt, "  x    y", sep="\n")
   for(i in 1:length(params)){
-    cline <- paste(params[i], format(proj[i,1], digits=2), format(proj[i,2], digits=2), sep=" ")
+    cline <- paste(params[i], format(proj[i,1], digits=2),
+                   format(proj[i,2], digits=2), sep=" ")
     txt <- paste(txt, cline, sep="\n")
   }
   return(txt)

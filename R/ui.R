@@ -26,12 +26,15 @@ tabInput <- function(params){
         shiny::checkboxInput("rescale", "Rescale", value = TRUE),
         shiny::selectInput("tourType", "Select tour type",
                            choices = c("Grand tour", "Guided tour",
-                                       "Planned tour", "Little tour", "Local tour"),
+                                       "Planned tour", "Little tour",
+                                       "Local tour"),
                            selected = "Grand tour"),
         shiny::conditionalPanel('input.tourType=="Guided tour"',
-                                shiny::selectInput("tourIndex", "Select index function",
-                                            choices = guidedTourOptions)),
-        shiny::conditionalPanel('input.tourType=="Grand tour" || input.tourType=="Little tour"
+                                shiny::selectInput("tourIndex",
+                                                   "Select index function",
+                                                   choices = guidedTourOptions)),
+        shiny::conditionalPanel('input.tourType=="Grand tour"
+                                || input.tourType=="Little tour"
                                 || input.tourType=="Local tour"',
                                 shiny::numericInput(
                                   "nPlanes",
@@ -48,7 +51,8 @@ tabInput <- function(params){
                                   accept = ".RDS"
                                   )
                                 ),
-        shiny::numericInput("angle", "Angular step size", 0.05, min = 0.01, max = 1),
+        shiny::numericInput("angle", "Angular step size",
+                            0.05, min = 0.01, max = 1),
         shiny::actionButton("updateTour", "Update results")
         ),
       shiny::column(
@@ -57,7 +61,12 @@ tabInput <- function(params){
                            choices = c("groups", "density", "linked brushing"),
                            selected = "density"),
         shiny::conditionalPanel('input.displayType=="groups"',
-                                shiny::selectInput("groupVar", "Grouping variable", choices = c("None")))
+                                shiny::selectInput(
+                                  "groupVar",
+                                  "Grouping variable",
+                                  choices = c("None")
+                                  )
+                                )
         ),
       shiny::column(width = 5,
                     shiny::textOutput("messages"))
@@ -105,14 +114,19 @@ tabResults <- function(npoint){
                                 shiny::selectInput(
                                   "selectionType",
                                   "Update with selection as",
-                                  choices = c("New only", "Both selections", "Overlapping set")
+                                  choices = c(
+                                    "New only",
+                                    "Both selections",
+                                    "Overlapping set")
                                   )
                                 ),
         htmltools::div(style = "display:inline-block",
                        plotly::plotlyOutput("axes", width = 200, height = 200)
                        ),
         htmltools::div(style = "display:inline-block",
-                       plotly::plotlyOutput("coverageDisplay", width = 200, height = 200)
+                       plotly::plotlyOutput("coverageDisplay",
+                                            width = 200,
+                                            height = 200)
         ),
         shiny::conditionalPanel('input.displayType=="linked brushing"',
                                 shiny::verbatimTextOutput("range")),
@@ -124,13 +138,17 @@ tabResults <- function(npoint){
                        plotly::plotlyOutput("tour", width = 750, height = 750)
                        ),
         htmltools::div(style = "display:inline-block",
-                       plotly::plotlyOutput("ggtimeline", width = 750, height = 50)
+                       plotly::plotlyOutput("ggtimeline",
+                                            width = 750,
+                                            height = 50)
         )
         ),
       shiny::column(
         width = 3,
         htmltools::div(style = "display:inline-block",
-                       plotly::plotlyOutput("params", width = 300, height = 750)
+                       plotly::plotlyOutput("params",
+                                            width = 300,
+                                            height = 750)
                        )
         )
       )

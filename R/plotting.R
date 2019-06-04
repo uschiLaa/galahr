@@ -47,7 +47,7 @@ coverageDispMargin <- list(l= 5,
 colorList <- function(gr){
   allColors <- TRUE
   for (c in unique(gr)){
-    if(inherits(try(plotly::toRGB(c), silent=T), "try-error")) allColors <- FALSE
+    if(inherits(try(plotly::toRGB(c), silent=TRUE), "try-error")) allColors <- FALSE
   }
   if (allColors) return(list(color=gr, col=unique(gr)))
   n <- length(unique(gr))
@@ -65,7 +65,7 @@ cubeLineStyle <- list(color= plotly::toRGB("gray"),
 #' Formatted empty axis style for plotly.
 #'
 #' @keywords internal
-noAxis = list(
+noAxis <- list(
   title = "",
   zeroline = FALSE,
   showline = FALSE,
@@ -138,8 +138,8 @@ timelineAxis<- function(xMax, breaks){
 #' @keywords internal
 customLegend <- function(labs, col, halfRange){
   a <- c()
-  x = halfRange*0.7
-  y = halfRange*0.9
+  x <- halfRange*0.7
+  y <- halfRange*0.9
   for (i in 1:length(labs)){
     a[[i]] <- list(text=paste0("<b>",labs[i],"</b>"), x=x, y=y,
                    font=list(size=14,color=col[i]), showarrow = FALSE)
@@ -225,8 +225,8 @@ plotly_tour_grouped <- function(scatterData, cubeData, hoverData, halfRange, gr)
 #' @return List of plotly visualisations
 #' @export
 plotly_1d <- function(d1, d2, markerD1=NULL){
-  if(nrow(d2)>0){y2 = c(0)}
-  else{y2 = NULL}
+  if(nrow(d2)>0){y2 <- c(0)}
+  else{y2 <- NULL}
   if(is.null(markerD1)){markerD1 <- getMarker("black")}
   varList <- colnames(d1)
   cplots <- lapply(varList, function(var) {
@@ -262,24 +262,27 @@ plotly_axes <- function(xVec, yVec, paramList){
   plotlyAxes <- plotly::plot_ly(type="scatter", mode = "lines")
   for(i in 1:length(xVec)){
     plotlyAxes <- plotlyAxes %>%
-      plotly::add_trace(x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=getMarker("black"))
+      plotly::add_trace(
+        x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=getMarker("black")
+        )
   }
   plotlyAxes <- plotlyAxes %>%
-    plotly::layout(xaxis=noAxis, yaxis=noAxis, showlegend = FALSE, shapes = list(
-      list(type = 'circle',
-           xref = 'x', x0 = -1, x1 = 1,
-           yref = 'y', y0 = -1, y1 = 1,
-           line = getMarker("black")),
-      list(type = 'rect',
-           xref = 'x', x0 = -1.5, x1 = 1.5,
-           yref = 'y', y0 = -1.5, y1 = 1.5,
-           line = getMarker("black")))) %>%
+    plotly::layout(xaxis=noAxis, yaxis=noAxis, showlegend = FALSE,
+                   shapes = list(
+                     list(type = 'circle',
+                          xref = 'x', x0 = -1, x1 = 1,
+                          yref = 'y', y0 = -1, y1 = 1,
+                          line = getMarker("black")),
+                     list(type = 'rect',
+                          xref = 'x', x0 = -1.5, x1 = 1.5,
+                          yref = 'y', y0 = -1.5, y1 = 1.5,
+                          line = getMarker("black")))) %>%
     plotly::add_annotations(x = 1.1*xVec,
                             y = 1.1*yVec,
                             text = paramList,
-                    xref = "x",
-                    yref = "y",
-                    showarrow = FALSE)
+                            xref = "x",
+                            yref = "y",
+                            showarrow = FALSE)
   return(plotlyAxes)
 }
 
@@ -297,11 +300,14 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   breaks <- breaks[breaks<maxT] # throw out breaks above maxT
   timelinePlot <- plotly::plot_ly(type = "scatter") %>%
     plotly::add_trace(y = c(0.5), x = 1:maxT, #invisible markers for click events
-                      mode = "markers", marker = getSmallMarker("black", a = 0), type = "scatter") %>%
+                      mode = "markers", marker = getSmallMarker("black", a = 0),
+                      type = "scatter") %>%
     plotly::add_trace(y = c(0.5), x = anchors,
-                      mode = "markers", marker = getSmallMarker("red"), type = "scatter") %>%
+                      mode = "markers", marker = getSmallMarker("red"),
+                      type = "scatter") %>%
     plotly::add_trace(y = c(0.5), x = c(current,current), #duplicating point to make restyle work
-                      mode = "markers", marker = getSmallMarker("black"), type = "scatter") %>%
+                      mode = "markers", marker = getSmallMarker("black"),
+                      type = "scatter") %>%
     plotly::layout(xaxis=timelineAxis(maxT, breaks), yaxis = noAxisRange(0,1),
                    showlegend = FALSE, margin = plotlyMargin) %>%
     plotly::config(displayModeBar=FALSE)
@@ -320,15 +326,19 @@ coveragePlot <- function(pcaRes, n, i){
   x <- dplyr::as_tibble(pcaRes$x) %>%
     dplyr::mutate(t = "data")
   x$t[ntot-n:ntot] <- "anchor"
-  dpoints <- filter(x, t=="data")
-  apoints <- filter(x, t=="anchor")
+  dpoints <- dplyr::filter(x, t=="data")
+  apoints <- dplyr::filter(x1, t=="anchor")
   ret <- plotly::plot_ly(type = "scatter") %>%
     plotly::add_trace(x=dpoints$PC1, y=dpoints$PC2,
-                      mode = "markers", marker = getMarker("darkorchid"), type = "scatter") %>%
+                      mode = "markers", marker = getMarker("darkorchid"),
+                      type = "scatter") %>%
     plotly::add_trace(x=apoints$PC1, y=apoints$PC2,
-                      mode = "markers", marker = getMarker("chartreuse3"), type = "scatter") %>%
-    plotly::add_trace(x = c(apoints$PC1[2*i], apoints$PC1[2*i-1]), y = c(apoints$PC2[2*i], apoints$PC2[2*i-1]),
-                      mode = "markers", marker = getMarker("black"), type = "scatter") %>%
+                      mode = "markers", marker = getMarker("chartreuse3"),
+                      type = "scatter") %>%
+    plotly::add_trace(x = c(apoints$PC1[2*i], apoints$PC1[2*i-1]),
+                      y = c(apoints$PC2[2*i], apoints$PC2[2*i-1]),
+                      mode = "markers", marker = getMarker("black"),
+                      type = "scatter") %>%
     plotly::layout(xaxis=noAxis, yaxis = noAxis,
                    showlegend = FALSE, margin=coverageDispMargin) %>%
     plotly::config(displayModeBar=FALSE)
@@ -345,12 +355,20 @@ coveragePlot <- function(pcaRes, n, i){
 updatePlots <- function(rv, session, input, output){
   updateReactiveData(rv)
   plotly::plotlyProxy("tour",session) %>%
-    plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cdata$V1), y = list(rv$cdata$V2)),list(2)) %>%
-    plotly::plotlyProxyInvoke("restyle", list(x = list(rv$cubeLine$V1), y = list(rv$cubeLine$V2)),list(1))
+    plotly::plotlyProxyInvoke("restyle",
+                              list(x = list(rv$cdata$V1),
+                                   y = list(rv$cdata$V2)),
+                              list(2)) %>%
+    plotly::plotlyProxyInvoke("restyle",
+                              list(x = list(rv$cubeLine$V1),
+                                   y = list(rv$cubeLine$V2)),
+                              list(1))
 
   #reminder: restyle only works for more than one point in the trace
   plotly::plotlyProxy("ggtimeline",session) %>%
-    plotly::plotlyProxyInvoke("restyle", list(x = list(c(rv$t, rv$t))),list(3))
+    plotly::plotlyProxyInvoke("restyle",
+                              list(x = list(c(rv$t, rv$t))),
+                              list(3))
 
   # redraw axes
   xVec <- rv$fullTour[[rv$t]][,1]
@@ -362,6 +380,7 @@ updatePlots <- function(rv, session, input, output){
   pc2 <- rv$tourPCA$x[,2]
   plotly::plotlyProxy("coverageDisplay",session) %>%
     plotly::plotlyProxyInvoke("restyle", list(x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
-                                              y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),list(3))
+                                              y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),
+                              list(3))
 
 }

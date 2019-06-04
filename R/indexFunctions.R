@@ -3,7 +3,9 @@
 #' @keywords internal
 guidedTourOptions <- c("cmass", "holes")
 if (requireNamespace("binostics", quietly = TRUE)) {
-  guidedTourOptions <- c(guidedTourOptions, "Skinny", "Striated", "Convex", "Clumpy")
+  guidedTourOptions <- c(
+    guidedTourOptions, "Skinny", "Striated", "Convex", "Clumpy"
+    )
 }
 if (requireNamespace("mbgraphic", quietly = TRUE)) {
   guidedTourOptions <- c(guidedTourOptions, "splines2d", "dcor2d")
