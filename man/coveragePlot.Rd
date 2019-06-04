@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{coveragePlot}
 \alias{coveragePlot}
-\title{Generating the ggplot coverage display.}
+\title{Generating the coverage display.}
 \usage{
 coveragePlot(pcaRes, n, i)
 }
@@ -14,8 +14,8 @@ coveragePlot(pcaRes, n, i)
 \item{i}{Index of current projection}
 }
 \value{
-ggplot visualisation of coverage display.
+visualisation of coverage display.
 }
 \description{
-Generating the ggplot coverage display.
+Generating the coverage display.
 }

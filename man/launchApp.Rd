@@ -14,7 +14,7 @@ Shiny app for exploring high dimensional data
 }
 \examples{
 \dontrun{
-launch_app()
+launchApp()
 FIXME example with alternative input data
 }
 }

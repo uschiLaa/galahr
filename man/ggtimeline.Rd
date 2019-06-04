@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotting.R
 \name{ggtimeline}
 \alias{ggtimeline}
-\title{Generating the ggplot timeline display.}
+\title{Generating the timeline display.}
 \usage{
 ggtimeline(anchors, current, maxT, breaks, indexVals = NULL)
 }
@@ -19,8 +19,8 @@ ggtimeline(anchors, current, maxT, breaks, indexVals = NULL)
 (default is NULL)}
 }
 \value{
-ggplot visualisation of timeline
+visualisation of timeline
 }
 \description{
-Generating the ggplot timeline display.
+Generating the timeline display.
 }
