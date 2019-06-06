@@ -20,7 +20,7 @@ galahr provides a GUI to the `tourr` package based on `shiny` and `plotly`. Uplo
 
 ## Basic usage
 
-Launch they GUI with the default dataset as
+Launch the GUI with the default dataset as
 
 ```{r launchApp, eval = FALSE}
 launchApp()
@@ -31,17 +31,25 @@ This will build a Shiny app with some initial default settings, the parameters c
 
 To look at a different dataset you can either use the file upload in the "input" panel after launching the app, or pass your dataframe in the function call. For example you can launch using the `GW170817` data as
 
-```{r launchApp, eval = FALSE}
+```{r launchAppwData, eval = FALSE}
 launchApp(paramDF = GW170817)
 ```
 
 ## Examples
 
-### `tsfeatureData` 
-By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. This data set contains features (calculated with the `tsfeatures` package) for three types of time series, the type is stored in the `category` variable. By default the app will start up with a grand tour shown in the density display, and up to six variables are selected. For a better overview of this dataset we use the `input` panel, in the second column we select the `groups` display type. In this dataset there is only one categorical variable which is preselected as the grouping variable. We then push the `update results` action button on the bottom of the first column to load the tour with the new input selections. We can now open the `results` tab to inspect the dataset with groups mapped to colour. Interestingly the set of music time series appears to be more similar to air temperature time series than bird songs in this feature space.
+### `tsfeatureData`
+By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. This data set contains features (calculated with the `tsfeatures` package) for three types of time series, the type is stored in the `category` variable. By default the app will start up with a grand tour shown in the density display, and up to six variables are selected. You can change the display type as follows
+
+- go to the "input" panel
+- in the second column select the "groups" display
+- since there is only one categorical variable the grouping variable will be correctly preselected
+- push the "update results" button to refresh the "results"
+- move to the "results" panel and press "Play" to start the grand tour animation
 
 ### `galah`
-Another example dataset included with this package is `galah`. We can launch the app as `launchApp(galah)` to load it. Again the dataset contains exactly one categorical variable, but in this case the `col` variable lists hex codes which can directly be mapped to the corresponding color when selecting the `groups` display. This dataset is best viewed with a planned tour as shown in the example below.
+Another example dataset included with this package is `galah`. Below we explain how to upload a planned tour path with this dataset
+
+- we start by using the spinebil package to generate the planes between which we want to interpolate in the planned tour, you can do this as follows
  ```{r, eval = FALSE}
 # matrix representation of planes to show in the planned tour
 m1 <- spinebil::basisMatrix(1,2,6)
@@ -52,22 +60,38 @@ galahPath <- list(m3, m1, m2, m3)
 saveRDS(galahPath, file="galahPath.rds")
   )
   ```
-We can now lauch the app with the `galah` dataset
+- now lauch the app with the `galah` dataset
  ```{r, eval = FALSE}
  launchApp(galah)
  ```
-and open the `input` panel. Again we select the `groups` display option. In the first colum we select the tour type to be "Planned tour" and we upload the previously generated "galahPath.rds" file. We now update the results with the action button at the bottom at the first column and move to the `results` panel to see the planned tour of the `galah` dataset!
+- select the "groups" display as in the previous example (note that here the categorical variable contains hex codes which are directly mapped to color in the "results" display)
+- select the tour type to be "Planned tour"
+- this will enable a file upload for the tour path, upload the previously saved "galahPath.rds"
+- update the results by pressing "update results"
+- move to the "results" panel and hit "Play" to view the planned tour of the dataset
 
 ### `GW170817`
 
 The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.
 FIXME paper reference to LIGO here?
-We can load the dataset into the app with 
+
+- start by loading the app with this dataset:
  ```{r, eval = FALSE}
  launchApp(GW170817)
  ```
-Since this is a posterior sample the default display `density` is appropriate for this dataset and we can directly look at the grand tour loaded in the `results` panel. In this display we can now modify the transparancy of the datapoints by selecting alpha. For this example a value around 0.1 is appropriate to distinguish regions of high/low density in the display. We may notice strong association between the parameters m1 and m2. We can return to the `input` panel and change some settings. For example we can remove m2 from the list of parameters, and select the guided tour option. This enables us to select a projection pursuit index to optimise in the guided tour. If the package `mbgraphic` is installed, we can select the `splines2d` index and press "Update results". It will take about a minute to find the guided tour path. Once the optimisation is finished we can replay the guided tour in the results panel. In this case we find a strong functional dependence between multiple of the parameters in the dataset. With the final projection on display, we can come back to the `input` panel once more and select the "Local tour" option to explore the neighborhood of the optimised final projection (remember to press "Update results" before returning to the `results` panels). We could also change the display to "linked brushing" which will allow us to highlight based on the 1-d view in the last column of the `results` panel, or in the tour display.
-
+- keep the "density" display option which is appropriate for viewing posterior samples
+- move to the "results" panel and try different values of "alpha" to tune the transparancy of the sample points
+- look at the grand tour of this dataset - do you notice strong association between the parameters?
+- move back to the "input" panel to change some of the setting
+- try removing m2 from the list of parameters and selecting the tour type "Guided tour"
+- you can now choose a projection pursuit index, if you have `mbgraphic` installed, try the "splines2d" index
+- press "update results", this will now take about a minute to optimise the index and generate the guided tour path
+- move back to the "results" panel to view the animation, moving towards a view showing strong functional dependence
+- once you reached the final projection move back to the "input" panel
+- select the "Local tour" option to explore the neighborhood of the current projection
+- select the display type "linked brushing" and press "update results"
+- move back to the "results" panel to play the local tour
+- try selecting different regions on the 1-d parameter displays on the right with different options of "Update with selection as"
 
 ## The `input` panel
 
