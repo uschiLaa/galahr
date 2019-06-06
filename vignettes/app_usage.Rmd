@@ -95,45 +95,59 @@ FIXME paper reference to LIGO here?
 
 ## The `input` panel
 
+The default input options are shown in the annotated image below.
+
 ```{r echo=FALSE, out.width='70%'}
 knitr::include_graphics('./input_annotated.png')
 ```
 
 The following options are available:
 
-- File upload options to load parameter values from a CSV format data file
-- Checkbox selection of the parameter values that should be used as input to the tour (choose from all numeric parameters in the input data)
-- Checkbox selection to turn rescaling on/off. If on the data will be rescaled such that each parameter takes values between 0 and 1.
-- Tour type selection. By default a short grand tour path will be generated. The other available options are: guided tour, planned tour, little tour and local tour (starting from the current basis, this is particularly useful when stopping the tour display and loading a local tour to explore the surroundings of an identified interesting view).
-- If the selected tour type is grand, little or local tour the user may select the number of planes to generate (note that all tour paths are first recorded and then replayed in the results panel).
-- If the selected tour type is guided tour the user may select the index function to be used. The options depend on the availability of relevant packages. The `tourr` functions `holes` and `cmass` are always available. If the `binostics` package is installed the scagnostics indexes "Skinny", "Striated", "Convex" and "Clumpy" are available. If the `mbgraphic` package is installed the index functions "splines2d" and "dcor2d" are available, and if the `minerva` package is installed the index functions "MIC" and "TIC" are available. In addition, if grouping is selected "lda_pp" and "pda_pp" from the `tourr` package are also available.
-- If the selected tour type is planned tour, the user is asked to upload the anchor planes in RDS format.
-- The angular step size used in the interpolation between planes can be selected between 0.01 and 1, with the default value at 0.05.
-- The update results button must be pressed to load the tour path with the selected settings.
-- There are currently three different display options. All displays are in the form of 2-d scatter plots, with selection between density display (allowing the user to tune the transparancy), linked brushing (with highlighting based on selection in either the 2-d projection or along input parameter values) and grouped display (mapping a selected grouping variable to color)
-- If the grouped display is selected, the user may select a grouping variable from all character type input parameters.
+| Option | Details |
+|:--|:---------|
+|   Input update  |  Click "Browse" to upload CSV file of your input data  |
+|  Parameter selection  |  Check the parameters that should be included in the tour (at least 3) |
+|    Rescale  | Check to rescale each parameter direction to take values between 0 and 1 |
+| Tour type | Select from grand tour, guided tour, planned tour, little tour and local tour (starting from the current basis, this is particularly useful when stopping the tour display and loading a local tour to explore the surroundings of an identified interesting view)|
+| Step size | Fix the angular step size used in the interpolation between anchor planes |
+| Display type | Choose from density, groups and linked brushing |
+| Update results | Push button to update results with new input selection |
+
+In addition, some settings allow for new options:
+
+| Option | Details |
+|:--|:---------|
+| Index function | Choose index function used in the guided tour. The `tourr` functions `holes` and `cmass` are always available. If the `binostics` package is installed the scagnostics indexes "Skinny", "Striated", "Convex" and "Clumpy" are available. If the `mbgraphic` package is installed the index functions "splines2d" and "dcor2d" are available, and if the `minerva` package is installed the index functions "MIC" and "TIC" are available. In addition, if grouping is selected "lda_pp" and "pda_pp" from the `tourr` package are also available.|
+| Anchor planes | Upload the anchor planes for a planned tour in RDS format. |
+| Grouping variable | Select a grouping variable from all character type input parameters, this is mapped to color in the groups display. |
 
 ## The `results` panel
 
-The first column in the output panel contains several options for the user to select:
+An annotated example of the results display is shown below.
 
-- A play button allowing to start/pause the tour.
-- A save button that will save the current projection (FORMAT?).
-- A print button that will print the current projection to the console.
-- A save all button that will save the complete current tour path (i.e. all anchor planes, FORMAT?)
-- If the selected display type is "density"" the user can select the point transparancy by choosing alpha between 0.01 and 1.
-- If the selected display type is "linked brushing" the user can select the checkbox "Show selected points only" to remove all other points from the display (e.g. for more efficient rendering).
-- There is also the option to select a sample from the input data, which will be randomly selected. This may be required for large datasize if rendering becomes to slow for viewing the tour display.
-- In case of the "linked brushing" display the user may select the update logic between "new only" (reset selection each time), "both selections" (inclusive combination of previous and new selection) or "overlapping set" (additional condition on the existing selection). Note that selection is possible both in the tour display and in the 1-d parameter display.
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('./results_annotated.png')
+```
 
-Below these options there are two small helper displays for the viewer:
+The following options are available (some depend on display type):
 
-- The axes display, visualising the currently shown projection.
-- The coverage display, visualising the coverage in the space of all projections, and the current position along the trajectory of projections in the current tour path. This visualisation is based on a principal component analysis over all projection vectors occuring in the interpolated tour path and anchor points corresponding to bases aligned with the original parameter directions. The projection onto the first two principal components is shown, with anchor points shown in purple, the tour path basis vectors shown in green and the current position shown in black.
+| Option | Details |
+|:--|:---------|
+| Play | Press to start/pause the tour animation |
+| Save/Print| Save (in RDS format) or print the projection matrix for the currently shown projection |
+| Save all | Save all anchor planes of the current tour path (in RDS format) |
+| Alpha | Select transparancy of points in the density display |
+| Update as | Choose how selection for linked brushing is updated (use only new selection, combine both or use only the overlapping region) |
+| Selected points only | Only show selected points in the linked brushing display |
+| Sample size | Fix a size for a random sample used in the tour display, this may be required for large data sets if rendering becomes slow |
 
-The middle column contains the main result, showing the projected data points in the form of a 2-d scatter plot. In addition we also show a projection of the hypercube containing all data points (if the data is not rescaled, the cube edge in each direction is shifted and connects the lowest value to the highest value). The display is made in plotly, in the "linked brushing" display, once the user selects points they will be highlighted in red, while the non-selected points will be made somewhat transparant to ensure view of the selected points without re-sorting. For other display selections (density or grouped) the default plotly behaviour is similar, highlighting the selected points while blending out the non-selected. Note however that in this case the brushing is not linked with the 1-d display.
+The results are shown in five displays:
 
-Below the main result we show the timeline of the tour path. Points in red indicate anchor points selected by the tour path generator, all other planes result from the interpolation between those planes. The black point shows the position of the current plane in the timeline. When the tour is not playing we can click along the timeline to select a position in the path, this will update the display and the tour will be played from the selected point onwards. This is particularly useful in interaction with the print/save options or when going back to launch a local tour.
-
-The final column contains the 1-d display of all parameter values (including those not selected for the tour display). This is most useful when working with the linked brushing option.
+| Display | Details |
+|:--|:---------|
+| Axes display | Visualisation of the currently shown projection matrix. |
+| Coverage display | Visualisation of the coverage of the current tour path in the space of all projections based on principal component analysis, anchor points (spanning the basis in p dimensions) are shown in purple, the tour path basis vectors shown in green and the current position shown in black. |
+| Tour display | Visualisation of the projected data points in the form of a 2-d scatter plot. In addition we also show a projection of the hypercube containing all data points. |
+| Timeline display | Points in red indicate anchor points selected by the tour path generator. The black point shows the current position along the timeline. When the animation is paused clicking on the timeline will result in jumping to the corresponding projection. |
+| 1-d parameter display | Visualising the parameter values of all data points, this is most useful when working with the linked brushing option. |
 
