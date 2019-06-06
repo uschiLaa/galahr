@@ -1,6 +1,6 @@
 Package: galahr
 Type: Package
-Title: A GUI to assist learning about high dimensions in R
+Title: galahr: A GUI to assist learning about high dimensions in R
 Version: 0.1.0
 Authors@R: c(person("Ursula", "Laa", email = "ursula.laa@monash.edu", role = c("aut", "cre")),
              person("Dianne", "Cook", email = "dicook@monash.edu", role = "aut"))

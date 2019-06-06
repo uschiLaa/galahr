@@ -7,7 +7,7 @@
 
 <!-- badges: end -->
 
-A GUI to Assist Learning About High dimensions in R, galahr provides a
+galahr, a GUI to Assist Learning About High dimensions in R, provides a
 GUI to the `tourr` package based on `shiny` and `plotly`. Upload your
 dataset and use the input panel to select settings for the tour and
 display, move to the results panel to play the tour animation.

@@ -327,7 +327,7 @@ coveragePlot <- function(pcaRes, n, i){
     dplyr::mutate(t = "data")
   x$t[ntot-n:ntot] <- "anchor"
   dpoints <- dplyr::filter(x, t=="data")
-  apoints <- dplyr::filter(x1, t=="anchor")
+  apoints <- dplyr::filter(x, t=="anchor")
   ret <- plotly::plot_ly(type = "scatter") %>%
     plotly::add_trace(x=dpoints$PC1, y=dpoints$PC2,
                       mode = "markers", marker = getMarker("darkorchid"),
