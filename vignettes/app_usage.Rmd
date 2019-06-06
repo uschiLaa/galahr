@@ -95,7 +95,9 @@ FIXME paper reference to LIGO here?
 
 ## The `input` panel
 
-FIXME show screenshot of input panel?
+```{r echo=FALSE, out.width='70%'}
+knitr::include_graphics('./input_annotated.png')
+```
 
 The following options are available:
 
