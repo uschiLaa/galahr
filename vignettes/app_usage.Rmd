@@ -167,3 +167,6 @@ The results are shown in five displays:
 | Timeline display | Points in red indicate anchor points selected by the tour path generator. The black point shows the current position along the timeline. When the animation is paused clicking on the timeline will result in jumping to the corresponding projection. |
 | 1-d parameter display | Visualising the parameter values of all data points, this is most useful when working with the linked brushing option. |
 
+# Thank you
+
+Thanks to Nick Tierney for reviewing this package and giving lots of helpful feedback!

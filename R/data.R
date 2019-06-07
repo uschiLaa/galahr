@@ -6,6 +6,7 @@
 #'
 #' @format A tibble with 1082 rows and 14 variables (13 features and type)
 #' @source \url{https://www.comp-engine.org}
+#' @references \url{https://doi.org/10.1098/rsif.2013.0048}
 "tsfeatureData"
 
 #' Scatter points containing a galah.
@@ -23,4 +24,5 @@
 #'
 #' @format A tibble with 2396 rows and 6 variables
 #' @source \url{https://dcc.ligo.org/public/0152/P1800115/005/Parametrized-EoS_maxmass_posterior_samples.dat}
+#' @references \url{https://doi.org/10.1103/PhysRevLett.119.161101}
 "GW170817"

@@ -16,4 +16,7 @@ A dataset containing posterior samples describing neutron star
 properties measured by LIGO in the gravitational wave observation
 GW170817.
 }
+\references{
+\url{https://doi.org/10.1103/PhysRevLett.119.161101}
+}
 \keyword{datasets}

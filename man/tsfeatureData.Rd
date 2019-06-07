@@ -16,4 +16,7 @@ A dataset containing the features calculated with `tsfeatures`
 on three groups of time series: bird songs, air temperature and
 music.
 }
+\references{
+\url{https://doi.org/10.1098/rsif.2013.0048}
+}
 \keyword{datasets}
