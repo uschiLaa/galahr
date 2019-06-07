@@ -46,6 +46,11 @@ By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. Thi
 - push the "update results" button to refresh the "results"
 - move to the "results" panel and press "Play" to start the grand tour animation
 
+You should see something like this:
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('./tsExample.png')
+```
+
 ### `galah`
 Another example dataset included with this package is `galah`. Below we explain how to upload a planned tour path with this dataset
 
@@ -58,7 +63,6 @@ m3 <- spinebil::basisMatrix(5,6,6)
 # store the planes in list format and save as .rds
 galahPath <- list(m3, m1, m2, m3)
 saveRDS(galahPath, file="galahPath.rds")
-  )
   ```
 - now lauch the app with the `galah` dataset
  ```{r, eval = FALSE}
@@ -69,6 +73,12 @@ saveRDS(galahPath, file="galahPath.rds")
 - this will enable a file upload for the tour path, upload the previously saved "galahPath.rds"
 - update the results by pressing "update results"
 - move to the "results" panel and hit "Play" to view the planned tour of the dataset
+
+The first view should look like this:
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('./galahExample.png')
+```
 
 ### `GW170817`
 
@@ -92,6 +102,12 @@ FIXME paper reference to LIGO here?
 - select the display type "linked brushing" and press "update results"
 - move back to the "results" panel to play the local tour
 - try selecting different regions on the 1-d parameter displays on the right with different options of "Update with selection as"
+
+The example below was made in the linked brushing display, selecting points with low values of R2 on the 1-d display.
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics('./gwExample.png')
+```
 
 ## The `input` panel
 
