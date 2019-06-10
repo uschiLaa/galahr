@@ -164,7 +164,7 @@ customLegend <- function(labs, col, halfRange){
 #' @param red Logical, if TRUE use red markers for the scatter points
 #' @return plotly visualisation
 #' @export
-plotly_tour <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
+plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
   if(red){scatterM <- getMarker("red")}
   else{scatterM <- getMarker("black")}
   tAxis <- tourAxis(halfRange)
@@ -192,7 +192,7 @@ plotly_tour <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
 #' @param gr Vector containing group assignment for each data entry
 #' @return plotly visualisation
 #' @export
-plotly_tour_grouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
+plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
   tAxis <- tourAxis(halfRange)
   labs <- unique(gr)
   markers <- colorList(gr)
@@ -230,7 +230,7 @@ plotly_tour_grouped <- function(scatterData, cubeData, hoverData, halfRange, gr)
 #' @param markerD1 Custom marker (list) for d1, if NULL use default markers.
 #' @return List of plotly visualisations
 #' @export
-plotly_1d <- function(d1, d2, markerD1=NULL){
+plotly1d <- function(d1, d2, markerD1=NULL){
   if(nrow(d2)>0){y2 <- c(0)}
   else{y2 <- NULL}
   if(is.null(markerD1)){markerD1 <- getMarker("black")}
@@ -264,15 +264,15 @@ plotly_1d <- function(d1, d2, markerD1=NULL){
 #' @param paramList Vector of parameter names
 #' @return plotly visualisation of axes
 #' @export
-plotly_axes <- function(xVec, yVec, paramList){
-  plotlyAxes <- plotly::plot_ly(type="scatter", mode = "lines")
+plotlyAxesF <- function(xVec, yVec, paramList){
+  ret <- plotly::plot_ly(type="scatter", mode = "lines")
   for(i in 1:length(xVec)){
-    plotlyAxes <- plotlyAxes %>%
+    ret <- ret %>%
       plotly::add_trace(
         x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=getMarker("black")
         )
   }
-  plotlyAxes <- plotlyAxes %>%
+  ret <- ret %>%
     plotly::layout(xaxis=noAxis, yaxis=noAxis, showlegend = FALSE,
                    shapes = list(
                      list(type = 'circle',
@@ -289,7 +289,7 @@ plotly_axes <- function(xVec, yVec, paramList){
                             xref = "x",
                             yref = "y",
                             showarrow = FALSE)
-  return(plotlyAxes)
+  return(ret)
 }
 
 #' Generating the timeline display.
@@ -379,7 +379,7 @@ updatePlots <- function(rv, session, input, output){
   # redraw axes
   xVec <- rv$fullTour[[rv$t]][,1]
   yVec <- rv$fullTour[[rv$t]][,2]
-  plotlyAxes <- plotly_axes(xVec, yVec, input$parameters)
+  plotlyAxes <- plotlyAxesF(xVec, yVec, input$parameters)
   output$axes <- plotly::renderPlotly(plotlyAxes)
 
   pc1 <- rv$tourPCA$x[,1]

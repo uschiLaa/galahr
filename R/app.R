@@ -173,7 +173,7 @@ launchApp <- function(paramDF = NULL) {
                      cubePoints(length(input$parameters), rv$dataMatrix)
                    # 1-d parameter values
                    pPlots <-
-                     plotly_1d(rv$d, rv$outOfSample)
+                     plotly1d(rv$d, rv$outOfSample)
                    rv$h1d <- min(0.05, 1/length(pPlots))
                    output$params <- plotly::renderPlotly({
                      plotly::subplot(
@@ -199,14 +199,14 @@ launchApp <- function(paramDF = NULL) {
                      (input$groupVar !=" None")
                      ){
                      plotlyTour <-
-                       plotly_tour_grouped(rv$cdata, rv$cubeLine,
+                       plotlyTourGrouped(rv$cdata, rv$cubeLine,
                                            hoverTextDf, rv$halfRange,
                                            rv$groups[[input$groupVar]]
                                            )
                    }
                    else{
                      plotlyTour <-
-                       plotly_tour(rv$cdata, rv$cubeLine,
+                       plotlyTourF(rv$cdata, rv$cubeLine,
                                    hoverTextDf, rv$halfRange)
                    }
                    output$tour <- plotly::renderPlotly({
@@ -216,7 +216,7 @@ launchApp <- function(paramDF = NULL) {
                    xVec <- rv$fullTour[[1]][, 1]
                    yVec <- rv$fullTour[[1]][, 2]
                    plotlyAxes <-
-                     plotly_axes(xVec, yVec, input$parameters)
+                     plotlyAxesF(xVec, yVec, input$parameters)
                    output$axes <- plotly::renderPlotly(plotlyAxes)
                    rv$init <- TRUE
                  })
@@ -292,17 +292,17 @@ launchApp <- function(paramDF = NULL) {
         updateReactiveData(rv)
         if ((input$displayType == "groups") && (input$groupVar!="None")){
           plotlyTour <-
-            plotly_tour_grouped(rv$cdata, rv$cubeLine, hoverTextDf,
+            plotlyTourGrouped(rv$cdata, rv$cubeLine, hoverTextDf,
                                 rv$halfRange,
                                 rv$groups[[input$groupVar]][selection])
         }
         else{
           plotlyTour <-
-            plotly_tour(rv$cdata, rv$cubeLine, hoverTextDf, rv$halfRange)
+            plotlyTourF(rv$cdata, rv$cubeLine, hoverTextDf, rv$halfRange)
         }
         output$tour <- plotly::renderPlotly(plotlyTour)
         pPlots <-
-          plotly_1d(rv$inSample, rv$outOfSample)
+          plotly1d(rv$inSample, rv$outOfSample)
         output$params <- plotly::renderPlotly({
           plotly::subplot(
             pPlots,
@@ -348,7 +348,7 @@ launchApp <- function(paramDF = NULL) {
         updateReactiveData(rv)
         hoverC <- hoverText(rv$d[rv$s, ], input$parameters)
         plotlyTour <-
-          plotly_tour(rv$cdata, rv$cubeLine, hoverC, rv$halfRange, red = TRUE)
+          plotlyTourF(rv$cdata, rv$cubeLine, hoverC, rv$halfRange, red = TRUE)
         output$tour <- plotly::renderPlotly(plotlyTour)
       }
       else{
@@ -357,7 +357,7 @@ launchApp <- function(paramDF = NULL) {
           cHoverT <- hoverText(rv$inSample, input$parameters)
           updateReactiveData(rv)
           pTemp <-
-            plotly_tour(rv$cdata, rv$cubeLine, cHoverT, rv$halfRange)
+            plotlyTourF(rv$cdata, rv$cubeLine, cHoverT, rv$halfRange)
           output$tour <- plotly::renderPlotly(pTemp)
           rv$reloadScatter <- FALSE
         }
@@ -365,7 +365,7 @@ launchApp <- function(paramDF = NULL) {
           plotly::plotlyProxyInvoke("restyle", marker.color = list(markers))
       }
       pPlots <-
-        plotly_1d(rv$inSample,
+        plotly1d(rv$inSample,
                   rv$outOfSample,
                   list(color = markers))
       output$params <- plotly::renderPlotly({
