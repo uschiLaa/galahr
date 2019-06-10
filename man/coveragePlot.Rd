@@ -7,7 +7,7 @@
 coveragePlot(pcaRes, n, i)
 }
 \arguments{
-\item{pcaRes}{Results from \code{\link{fullTourPCA}}}
+\item{pcaRes}{Results from \code{\link[=fullTourPCA]{fullTourPCA()}}}
 
 \item{n}{Number of input parameters}
 

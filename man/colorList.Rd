@@ -11,7 +11,7 @@ colorList(gr)
 }
 \value{
 Named list containing assigned colors ("color")
-    and list of colors ("col")
+and list of colors ("col")
 }
 \description{
 Mapping grouping to color.

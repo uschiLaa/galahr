@@ -9,9 +9,9 @@ getPathIndex(fullTour, indexName, grId = NA)
 \arguments{
 \item{fullTour}{Interpolated tour path}
 
-\item{indexName}{Index name from \code{\link{guidedTourOptions}}}
+\item{indexName}{Index name from \code{\link[=guidedTourOptions]{guidedTourOptions()}}}
 
-\item{grId}{Class to be used when using \code{\link{groupedIndex}}}
+\item{grId}{Class to be used when using \code{\link[=groupedIndex]{groupedIndex()}}}
 }
 \value{
 Index values over the tour history

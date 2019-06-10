@@ -11,7 +11,7 @@ scags(scagMetricIndex)
 }
 \value{
 Function taking matrix input data (projected data),
-    returning value of selected scagnostics metric.
+returning value of selected scagnostics metric.
 }
 \description{
 Available scagnostics indexes are: Skinny, Striated, Convex, Clumpy

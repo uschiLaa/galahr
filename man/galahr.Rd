@@ -7,9 +7,9 @@
 \title{galahr: A GUI to assist learning about high dimensions in R}
 \description{
 A graphical interface to tourr using Shiny and
-   plotly to explore high dimensional distributions through
-   dynamic 2-d projections.
+plotly to explore high dimensional distributions through
+dynamic 2-d projections.
 }
 \seealso{
-Launch the app by calling [launchApp()]
+Launch the app by calling \code{\link[=launchApp]{launchApp()}}
 }

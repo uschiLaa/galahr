@@ -7,9 +7,9 @@
 getGuidedTour(indexName, grId = NA)
 }
 \arguments{
-\item{indexName}{Index name from \code{\link{guidedTourOptions}}}
+\item{indexName}{Index name from \code{\link[=guidedTourOptions]{guidedTourOptions()}}}
 
-\item{grId}{Class to be used when using \code{\link{groupedIndex}}}
+\item{grId}{Class to be used when using \code{\link[=groupedIndex]{groupedIndex()}}}
 }
 \value{
 guided_tour with corresponding index function

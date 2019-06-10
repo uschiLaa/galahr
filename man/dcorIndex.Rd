@@ -8,7 +8,7 @@ dcorIndex()
 }
 \value{
 Function taking matrix input data (projected data),
-    returning value of dcor2d metric.
+returning value of dcor2d metric.
 }
 \description{
 Distance correlation based tour index

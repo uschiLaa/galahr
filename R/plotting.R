@@ -322,7 +322,7 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
 
 #' Generating the coverage display.
 #'
-#' @param pcaRes Results from \code{\link{fullTourPCA}}
+#' @param pcaRes Results from [fullTourPCA()]
 #' @param n Number of input parameters
 #' @param i Index of current projection
 #' @return visualisation of coverage display.

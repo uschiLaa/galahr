@@ -11,7 +11,7 @@ mineIndex(mineIndex)
 }
 \value{
 Function taking matrix input data (projected data),
-    returning value of selected MINE metric.
+returning value of selected MINE metric.
 }
 \description{
 Available indexes are MIC, TIC

@@ -21,8 +21,8 @@ groupedIndex <- c("lda_pp", "pda_pp")
 
 #' Taking guided tour index name and returning corresponding guided tour
 #'
-#' @param indexName Index name from \code{\link{guidedTourOptions}}
-#' @param grId Class to be used when using \code{\link{groupedIndex}}
+#' @param indexName Index name from [guidedTourOptions()]
+#' @param grId Class to be used when using [groupedIndex()]
 #' @return guided_tour with corresponding index function
 #' @export
 getGuidedTour <- function(indexName, grId=NA){
@@ -76,8 +76,8 @@ getGuidedTour <- function(indexName, grId=NA){
 #'
 #'
 #' @param fullTour Interpolated tour path
-#' @param indexName Index name from \code{\link{guidedTourOptions}}
-#' @param grId Class to be used when using \code{\link{groupedIndex}}
+#' @param indexName Index name from [guidedTourOptions()]
+#' @param grId Class to be used when using [groupedIndex()]
 #' @return Index values over the tour history
 #' @export
 getPathIndex <- function(fullTour, indexName, grId=NA){

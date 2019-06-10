@@ -11,7 +11,7 @@ launchApp(paramDF = NULL)
 }
 \description{
 If no input data is specified the app will launch
-using the [tsfeatureData] example data.
+using the \link{tsfeatureData} example data.
 }
 \examples{
 \dontrun{

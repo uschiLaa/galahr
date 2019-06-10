@@ -15,7 +15,7 @@ customLegend(labs, col, halfRange)
 }
 \value{
 Vector of list to use as annotation in a plotly layout call for
-    generating the custom legend.
+generating the custom legend.
 }
 \description{
 Build a legend of colored label text.

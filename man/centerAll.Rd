@@ -13,7 +13,7 @@ centerAll(dPoints, cPoints)
 }
 \value{
 Named list containint the centered data points ("data")
-    and cube points ("cube")
+and cube points ("cube")
 }
 \description{
 For each view we center all points to be drawn.

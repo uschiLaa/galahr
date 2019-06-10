@@ -12,7 +12,7 @@
 tsfeatureData
 }
 \description{
-A dataset containing the features calculated with `tsfeatures`
+A dataset containing the features calculated with \code{tsfeatures}
 on three groups of time series: bird songs, air temperature and
 music.
 }

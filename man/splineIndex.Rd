@@ -8,7 +8,7 @@ splineIndex()
 }
 \value{
 Function taking matrix input data (projected data),
-    returning value of splines2d metric.
+returning value of splines2d metric.
 }
 \description{
 Spline based tour index
