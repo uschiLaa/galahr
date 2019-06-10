@@ -38,7 +38,7 @@ launchApp(paramDF = GW170817)
 ## Examples
 
 ### `tsfeatureData`
-By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. This data set contains features (calculated with the `tsfeatures` package) for three types of time series, the type is stored in the `category` variable. By default the app will start up with a grand tour shown in the density display, and up to six variables are selected. You can change the display type as follows
+By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. This data set contains features (calculated with the `tsfeatures` package) for three types of time series,^[taken from <https://www.comp-engine.org>] the type is stored in the `category` variable. By default the app will start up with a grand tour shown in the density display, and up to six variables are selected. You can change the display type as follows
 
 - go to the "input" panel
 - in the second column select the "groups" display
@@ -82,8 +82,7 @@ knitr::include_graphics('./galahExample.png')
 
 ### `GW170817`
 
-The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.
-FIXME paper reference to LIGO here?
+The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.^[see <https://doi.org/10.1103/PhysRevLett.119.161101>]
 
 - start by loading the app with this dataset:
  ```{r, eval = FALSE}
