@@ -7,14 +7,15 @@
 launchApp(paramDF = NULL)
 }
 \arguments{
-\item{paramDF}{input data to load the app with. By default load data from FIXME SOME EXAMPLE}
+\item{paramDF}{input data to load the app with}
 }
 \description{
-Shiny app for exploring high dimensional data
+If no input data is specified the app will launch
+using the [tsfeatureData] example data.
 }
 \examples{
 \dontrun{
 launchApp()
-FIXME example with alternative input data
+launchApp(paramDF = GW170817)
 }
 }

@@ -1,10 +1,13 @@
 #' Shiny app for exploring high dimensional data
 #'
-#' @param paramDF input data to load the app with. By default load data from FIXME SOME EXAMPLE
+#' If no input data is specified the app will launch
+#' using the [tsfeatureData] example data.
+#'
+#' @param paramDF input data to load the app with
 #' @export
 #' @examples \dontrun{
 #' launchApp()
-#' FIXME example with alternative input data
+#' launchApp(paramDF = GW170817)
 #' }
 launchApp <- function(paramDF = NULL) {
   if (is.null(paramDF)) {
