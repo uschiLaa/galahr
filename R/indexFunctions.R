@@ -26,19 +26,49 @@ groupedIndex <- c("lda_pp", "pda_pp")
 #' @return guided_tour with corresponding index function
 #' @export
 getGuidedTour <- function(indexName, grId=NA){
-  if(indexName=="cmass"){return(tourr::guided_tour(tourr::cmass()))}
-  if(indexName=="holes"){return(tourr::guided_tour(tourr::holes()))}
-  if(indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
-    return(tourr::guided_tourr(scags(indexName)))
+  if (indexName=="cmass") {
+    return(
+      tourr::guided_tour(tourr::cmass())
+      )
     }
-  if(indexName=="splines2d"){return(tourr::guided_tour(splineIndex()))}
-  if(indexName=="dcor2d"){return(tourr::guided_tour(dcorIndex()))}
-  if(indexName %in% c("MIC","TIC")){
-    return(tourr::guided_tour(mineIndex(indexName)))
+  if (indexName=="holes") {
+    return(
+      tourr::guided_tour(tourr::holes())
+    )
     }
-  if(indexName=="lda_pp"){return(tourr::guided_tour(tourr::lda_pp(grId)))}
-  if(indexName=="pda_pp"){return(tourr::guided_tour(tourr::pda_pp(grId)))}
-  return(tourr::guided_tour(tourr::holes()))
+  if (indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
+    return(
+      tourr::guided_tour(scags(indexName))
+      )
+    }
+  if (indexName=="splines2d"){
+    return(
+      tourr::guided_tour(splineIndex())
+    )
+    }
+  if (indexName=="dcor2d"){
+    return(
+      tourr::guided_tour(dcorIndex())
+    )
+    }
+  if (indexName %in% c("MIC","TIC")){
+    return(
+      tourr::guided_tour(mineIndex(indexName))
+      )
+    }
+  if (indexName=="lda_pp"){
+    return(tourr::guided_tour(tourr::lda_pp(grId))
+    )
+    }
+  if (indexName=="pda_pp"){
+    return(
+      tourr::guided_tour(tourr::pda_pp(grId))
+    )
+  }
+  # default behaviour if index not found
+  return(
+    tourr::guided_tour(tourr::holes())
+    )
 }
 
 #' Taking interpolated tour path and index name and returning path index
@@ -51,17 +81,44 @@ getGuidedTour <- function(indexName, grId=NA){
 #' @return Index values over the tour history
 #' @export
 getPathIndex <- function(fullTour, indexName, grId=NA){
-  if(indexName=="cmass"){return(tourr::path_index(fullTour, tourr::cmass()))}
-  if(indexName=="holes"){return(tourr::path_index(fullTour, tourr::holes()))}
-  if(indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
-    return(tourr::path_index(fullTour, scags(indexName)))
+  if (indexName=="cmass"){
+    return(
+      tourr::path_index(fullTour, tourr::cmass())
+    )
     }
-  if(indexName=="splines2d"){return(tourr::path_index(fullTour, splineIndex()))}
-  if(indexName=="dcor2d"){return(tourr::path_index(fullTour, dcorIndex()))}
-  if(indexName %in% c("MIC","TIC")){
-    return(tourr::path_index(fullTour, mineIndex(indexName)))
+  if (indexName=="holes"){
+    return(
+      tourr::path_index(fullTour, tourr::holes())
+    )
     }
-  if(indexName=="lda_pp"){return(tourr::path_index(fullTour, tourr::lda_pp(grId)))}
-  if(indexName=="pda_pp"){return(tourr::path_index(fullTour, tourr::pda_pp(grId)))}
+  if (indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
+    return(
+      tourr::path_index(fullTour, scags(indexName))
+      )
+    }
+  if (indexName=="splines2d"){
+    return(
+      tourr::path_index(fullTour, splineIndex())
+    )
+    }
+  if (indexName=="dcor2d"){
+    return(tourr::path_index(fullTour, dcorIndex())
+    )
+    }
+  if (indexName %in% c("MIC","TIC")){
+    return(
+      tourr::path_index(fullTour, mineIndex(indexName))
+      )
+    }
+  if (indexName=="lda_pp"){
+    return(
+      tourr::path_index(fullTour, tourr::lda_pp(grId))
+      )
+    }
+  if (indexName=="pda_pp"){
+    return(
+      tourr::path_index(fullTour, tourr::pda_pp(grId))
+      )
+    }
   return(NULL)
 }

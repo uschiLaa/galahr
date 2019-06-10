@@ -142,8 +142,10 @@ fullTourPCA <- function(fullTour, n){
   return(tourPCA)
 }
 
-#### functions below are transforming existing functions for variable selection into
-#### tour index functions
+
+###################
+# functions below are transforming existing functions for variable selection
+# into tour index functions
 
 #' Scagnostics based tour index
 #'

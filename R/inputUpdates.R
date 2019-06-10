@@ -4,8 +4,8 @@
 #' @param rv Reactive value container.
 #' @keywords internal
 splitInput <- function(inData, rv){
-  rv$numVars <- sapply(inData, is.numeric)
-  rv$groupVars <- sapply(inData, is.character)
+  rv$numVars <- purrr::map_lgl(inData, is.numeric)
+  rv$groupVars <- purrr::map_lgl(inData, is.character)
   rv$d <- inData[rv$numVars]
   rv$groups <- inData[rv$groupVars]
 }
@@ -19,7 +19,7 @@ splitInput <- function(inData, rv){
 #' @keywords internal
 readInput <- function(file1, rv, output, session){
   paramFile <- file1$datapath
-  splitInput(read.csv(paramFile, stringsAsFactors = FALSE), rv)
+  splitInput(utils::read.csv(paramFile, stringsAsFactors = FALSE), rv)
   rv$npoint <- nrow(rv$d)
   nparam <- min(ncol(rv$d), 6)
   rv$init <- FALSE

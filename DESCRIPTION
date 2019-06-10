@@ -30,7 +30,9 @@ Imports:
     magrittr,
     geozoo,
     grDevices,
-    stats
+    stats,
+    purrr,
+    utils
 Suggests:
     minerva,
     binostics,

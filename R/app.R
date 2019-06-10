@@ -11,7 +11,7 @@ launchApp <- function(paramDF = NULL) {
     paramDF <- tsfeatureData
   }
 
-  params <- names(paramDF)[sapply(paramDF, is.numeric)]
+  params <- names(paramDF)[purrr::map_lgl(paramDF, is.numeric)]
   npoint <- nrow(paramDF)
 
 
@@ -39,10 +39,15 @@ launchApp <- function(paramDF = NULL) {
 
     shiny::observeEvent(c(input$displayType,input$groupVar), {
       if ((input$displayType != "groups") | (input$groupVar=="None")){
-        shiny::updateSelectInput(session, "tourIndex", choices = guidedTourOptions)}
+        shiny::updateSelectInput(
+          session, "tourIndex", choices = guidedTourOptions
+        )
+        }
       else {
         guidedTourOptionsNew <- c(guidedTourOptions,"lda_pp", "pda_pp")
-        shiny::updateSelectInput(session, "tourIndex", choices = guidedTourOptionsNew)
+        shiny::updateSelectInput(
+          session, "tourIndex", choices = guidedTourOptionsNew
+          )
       }
     })
 
@@ -182,7 +187,7 @@ launchApp <- function(paramDF = NULL) {
                    #hover text should contain all function and parameter values
                    hoverTextDf <- hoverText(rv$d, input$parameters)
                    rv$halfRange <-
-                     tourr:::compute_half_range(NULL, rv$dataMatrix, TRUE) * 1.3
+                     compute_half_range(NULL, rv$dataMatrix, TRUE) * 1.3
                    # now can draw tour display
                    # different function used when drawing grouped data
                    # (mapping group to color)
@@ -315,8 +320,9 @@ launchApp <- function(paramDF = NULL) {
         return()
       if (is.null(plotly::event_data("plotly_selected")))
         return()
+      # only even curve numbers are in current data sample
       newSelection <- plotly::event_data("plotly_selected") %>%
-        dplyr::filter(isEven(curveNumber)) # only even curve numbers are in current data sample
+        dplyr::filter(isEven(curveNumber))
       oldSelection <- rv$s
       rv$s <- newSelection$pointNumber + 1
       if (input$selectionType == "Both selections") {

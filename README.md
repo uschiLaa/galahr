@@ -14,14 +14,8 @@ display, move to the results panel to play the tour animation.
 
 ## Installation
 
-You can install the released version of galahr from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("galahr")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version of galahr from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")

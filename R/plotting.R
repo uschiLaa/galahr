@@ -5,7 +5,11 @@
 #' @return List formatted as required for plotly marker style.
 #' @keywords internal
 getMarker <- function(col, a=NULL){
-  if(is.null(a)) return(list(color = plotly::toRGB(col)))
+  if (is.null(a)){
+    return(
+      list(color = plotly::toRGB(col))
+      )
+  }
   list(color = plotly::toRGB(col, a))
 }
 
@@ -47,7 +51,9 @@ coverageDispMargin <- list(l= 5,
 colorList <- function(gr){
   allColors <- TRUE
   for (c in unique(gr)){
-    if(inherits(try(plotly::toRGB(c), silent=TRUE), "try-error")) allColors <- FALSE
+    if (inherits(try(plotly::toRGB(c), silent=TRUE), "try-error")) {
+      allColors <- FALSE
+    }
   }
   if (allColors) return(list(color=gr, col=unique(gr)))
   n <- length(unique(gr))
@@ -140,7 +146,7 @@ customLegend <- function(labs, col, halfRange){
   a <- c()
   x <- halfRange*0.7
   y <- halfRange*0.9
-  for (i in 1:length(labs)){
+  for (i in 1:seq_along(labs)){
     a[[i]] <- list(text=paste0("<b>",labs[i],"</b>"), x=x, y=y,
                    font=list(size=14,color=col[i]), showarrow = FALSE)
     y <- y - halfRange*0.05
@@ -379,8 +385,9 @@ updatePlots <- function(rv, session, input, output){
   pc1 <- rv$tourPCA$x[,1]
   pc2 <- rv$tourPCA$x[,2]
   plotly::plotlyProxy("coverageDisplay",session) %>%
-    plotly::plotlyProxyInvoke("restyle", list(x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
-                                              y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),
-                              list(3))
+    plotly::plotlyProxyInvoke("restyle", list(
+      x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
+      y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),
+      list(3))
 
 }
