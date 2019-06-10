@@ -146,7 +146,7 @@ customLegend <- function(labs, col, halfRange){
   a <- c()
   x <- halfRange*0.7
   y <- halfRange*0.9
-  for (i in 1:seq_along(labs)){
+  for (i in seq_along(labs)){
     a[[i]] <- list(text=paste0("<b>",labs[i],"</b>"), x=x, y=y,
                    font=list(size=14,color=col[i]), showarrow = FALSE)
     y <- y - halfRange*0.05
