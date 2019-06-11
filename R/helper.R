@@ -22,7 +22,7 @@ centerAll <- function(dPoints, cPoints){
     dplyr::bind_rows(tibble::add_column(
       dplyr::as_tibble(cPoints), t="cube"))
   centeredPoints <- dplyr::as_tibble(
-    tourr::center(dplyr::select(allPoints, -t))) %>%
+    center(dplyr::select(allPoints, -t))) %>%
     tibble::add_column(t=allPoints$t)
   dPoints <- centeredPoints %>%
     dplyr::filter(t=="data") %>%

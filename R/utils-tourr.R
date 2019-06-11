@@ -21,3 +21,11 @@ compute_half_range <- function(half_range, data, center) {
   message("Using half_range ", format(half_range, digits = 2))
   half_range
 }
+
+# Center the data.
+#
+# @keywords internal
+center <- function (x) 
+{
+  scale(x, center = TRUE, scale = FALSE)
+}
