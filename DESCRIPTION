@@ -17,7 +17,8 @@ Description: A graphical interface to tourr using Shiny and
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0) 
+Depends:
+    R (>= 3.5.0)
 Imports:
     tourr,
     shiny,
