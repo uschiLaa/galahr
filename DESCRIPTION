@@ -6,11 +6,11 @@ Authors@R: c(
     person("Ursula", "Laa",
            email = "ursula.laa@monash.edu",
            role = c("aut", "cre"),
-           comment = c(ORCID = "https://orcid.org/0000-0002-0249-6439")),
+           comment = c(ORCID = "0000-0002-0249-6439")),
     person("Dianne", "Cook",
            email = "dicook@monash.edu",
            role = "aut",
-           comment = c(ORCID = "https://orcid.org/0000-0002-3813-7155")))
+           comment = c(ORCID = "0000-0002-3813-7155")))
 Description: A graphical interface to tourr using Shiny and
     plotly to explore high dimensional distributions through
     dynamic 2-d projections.
