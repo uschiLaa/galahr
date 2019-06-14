@@ -266,7 +266,7 @@ plotly1d <- function(d1, d2, markerD1=NULL){
 #' @export
 plotlyAxesF <- function(xVec, yVec, paramList){
   ret <- plotly::plot_ly(type="scatter", mode = "lines")
-  for(i in 1:length(xVec)){
+  for(i in seq_along(xVec)){
     ret <- ret %>%
       plotly::add_trace(
         x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=getMarker("black")

@@ -98,7 +98,7 @@ cubePoints <- function(n, d){
 formatProj <- function(proj, params, idx){
   txt <- paste0("Projection ", idx)
   txt <- paste(txt, "  x    y", sep="\n")
-  for(i in 1:length(params)){
+  for(i in seq_along(params)){
     cline <- paste(params[i], format(proj[i,1], digits=2),
                    format(proj[i,2], digits=2), sep=" ")
     txt <- paste(txt, cline, sep="\n")
