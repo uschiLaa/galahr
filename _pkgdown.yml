@@ -1,0 +1,43 @@
+reference:
+- title: Main functionalities
+  desc: ~
+  contents:
+  - '`galahr`'
+  - '`launchApp`'
+- title: Plotting
+  desc: ~
+  contents:
+  - '`coveragePlot`'
+  - '`ggtimeline`'
+  - '`plotly1d`'
+  - '`plotlyAxesF`'
+  - '`plotlyTourF`'
+  - '`plotlyTourGrouped`'
+- title: Data
+  desc: ~
+  contents:
+  - '`GW170817`'
+  - '`galah`'
+  - '`tsfeatureData`'
+- title: Helper functions
+  desc: ~
+  contents:
+  - '`centerAll`'
+  - '`cubePoints`'
+  - '`dcorIndex`'
+  - '`formatProj`'
+  - '`fullTourPCA`'
+  - '`getGuidedTour`'
+  - '`getPathIndex`'
+  - '`mineIndex`'
+  - '`scags`'
+  - '`splineIndex`'
+
+navbar:
+  left:
+  - text: Using the GUI
+    href: articles/app_usage.html
+  - text: Reference
+    href: reference/index.html
+  - text: News
+    href: news/index.html
