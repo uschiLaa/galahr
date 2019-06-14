@@ -37,6 +37,8 @@ launchApp(paramDF = GW170817)
 
 ## Examples
 
+Go through the examples below to get an overview of how to use the interface in different ways.
+
 ### `tsfeatureData`
 By default the `tsfeatureData` dataset is loaded when calling `launchApp()`. This data set contains features (calculated with the `tsfeatures` package) for three types of time series,^[taken from <https://www.comp-engine.org>] the type is stored in the `category` variable. By default the app will start up with a grand tour shown in the density display, and up to six variables are selected. You can change the display type as follows
 
@@ -52,14 +54,14 @@ knitr::include_graphics('./tsExample.png')
 ```
 
 ### `galah`
-Another example dataset included with this package is `galah`. Below we explain how to upload a planned tour path with this dataset
+Another example dataset included with this package is `galah`. Below we explain the steps for viewing a planned tour path with this dataset
 
-- we start by using the spinebil package to generate the planes between which we want to interpolate in the planned tour, you can do this as follows
+- we start by using the utility functions for generating the planes between which we want to interpolate in the planned tour, you can do this as follows
  ```{r, eval = FALSE}
 # matrix representation of planes to show in the planned tour
-m1 <- spinebil::basisMatrix(1,2,6)
-m2 <- spinebil::basisMatrix(3,4,6)
-m3 <- spinebil::basisMatrix(5,6,6)
+m1 <- basisMatrix(1,2,6)
+m2 <- basisMatrix(3,4,6)
+m3 <- basisMatrix(5,6,6)
 # store the planes in list format and save as .rds
 galahPath <- list(m3, m1, m2, m3)
 saveRDS(galahPath, file="galahPath.rds")
@@ -82,20 +84,29 @@ knitr::include_graphics('./galahExample.png')
 
 ### `GW170817`
 
-The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.^[see <https://doi.org/10.1103/PhysRevLett.119.161101>]
+The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.^[see <https://doi.org/10.1103/PhysRevLett.119.161101>] We will use this dataset to demonstrate using: density displays, guided tour, local tour and linked brushing.
 
 - start by loading the app with this dataset:
  ```{r, eval = FALSE}
  launchApp(GW170817)
  ```
+ 
+Using the density display
+ 
 - keep the "density" display option which is appropriate for viewing posterior samples
 - move to the "results" panel and try different values of "alpha" to tune the transparancy of the sample points
 - look at the grand tour of this dataset - do you notice strong association between the parameters?
+
+Using the guided tour
+
 - move back to the "input" panel to change some of the setting
 - try removing m2 from the list of parameters and selecting the tour type "Guided tour"
 - you can now choose a projection pursuit index, if you have `mbgraphic` installed, try the "splines2d" index
 - press "update results", this will now take about a minute to optimise the index and generate the guided tour path
 - move back to the "results" panel to view the animation, moving towards a view showing strong functional dependence
+
+Using the local tour and linked brushing
+
 - once you reached the final projection move back to the "input" panel
 - select the "Local tour" option to explore the neighborhood of the current projection
 - select the display type "linked brushing" and press "update results"
@@ -108,7 +119,7 @@ The example below was made in the linked brushing display, selecting points with
 knitr::include_graphics('./gwExample.png')
 ```
 
-## The `input` panel
+## The input panel
 
 The default input options are shown in the annotated image below.
 
@@ -136,7 +147,7 @@ In addition, some settings allow for new options:
 | Anchor planes | Upload the anchor planes for a planned tour in RDS format. |
 | Grouping variable | Select a grouping variable from all character type input parameters, this is mapped to color in the groups display. |
 
-## The `results` panel
+## The results panel
 
 An annotated example of the results display is shown below.
 

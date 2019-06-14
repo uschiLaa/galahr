@@ -84,6 +84,7 @@
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
+<p>Go through the examples below to get an overview of how to use the interface in different ways.</p>
 <div id="tsfeaturedata" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tsfeaturedata" class="anchor"></a><code>tsfeatureData</code>
@@ -102,14 +103,14 @@
 <h3 class="hasAnchor">
 <a href="#galah" class="anchor"></a><code>galah</code>
 </h3>
-<p>Another example dataset included with this package is <code>galah</code>. Below we explain how to upload a planned tour path with this dataset</p>
+<p>Another example dataset included with this package is <code>galah</code>. Below we explain the steps for viewing a planned tour path with this dataset</p>
 <ul>
-<li>we start by using the spinebil package to generate the planes between which we want to interpolate in the planned tour, you can do this as follows</li>
+<li>we start by using the utility functions for generating the planes between which we want to interpolate in the planned tour, you can do this as follows</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># matrix representation of planes to show in the planned tour</span></a>
-<a class="sourceLine" id="cb3-2" title="2">m1 &lt;-<span class="st"> </span>spinebil<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/spinebil/man/basisMatrix.html">basisMatrix</a></span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>)</a>
-<a class="sourceLine" id="cb3-3" title="3">m2 &lt;-<span class="st"> </span>spinebil<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/spinebil/man/basisMatrix.html">basisMatrix</a></span>(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>)</a>
-<a class="sourceLine" id="cb3-4" title="4">m3 &lt;-<span class="st"> </span>spinebil<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/spinebil/man/basisMatrix.html">basisMatrix</a></span>(<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb3-2" title="2">m1 &lt;-<span class="st"> </span><span class="kw">basisMatrix</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb3-3" title="3">m2 &lt;-<span class="st"> </span><span class="kw">basisMatrix</span>(<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb3-4" title="4">m3 &lt;-<span class="st"> </span><span class="kw">basisMatrix</span>(<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">6</span>)</a>
 <a class="sourceLine" id="cb3-5" title="5"><span class="co"># store the planes in list format and save as .rds</span></a>
 <a class="sourceLine" id="cb3-6" title="6">galahPath &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(m3, m1, m2, m3)</a>
 <a class="sourceLine" id="cb3-7" title="7"><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">saveRDS</a></span>(galahPath, <span class="dt">file=</span><span class="st">"galahPath.rds"</span>)</a></code></pre></div>
@@ -131,20 +132,27 @@
 <h3 class="hasAnchor">
 <a href="#gw170817" class="anchor"></a><code>GW170817</code>
 </h3>
-<p>The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p>The third dataset included with the package is a posterior sample fitting neutron star parameters to the observed gravitational wave event GW170817.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> We will use this dataset to demonstrate using: density displays, guided tour, local tour and linked brushing.</p>
 <ul>
 <li>start by loading the app with this dataset:</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">launchApp</span>(GW170817)</a></code></pre></div>
+<p>Using the density display</p>
 <ul>
 <li>keep the “density” display option which is appropriate for viewing posterior samples</li>
 <li>move to the “results” panel and try different values of “alpha” to tune the transparancy of the sample points</li>
 <li>look at the grand tour of this dataset - do you notice strong association between the parameters?</li>
+</ul>
+<p>Using the guided tour</p>
+<ul>
 <li>move back to the “input” panel to change some of the setting</li>
 <li>try removing m2 from the list of parameters and selecting the tour type “Guided tour”</li>
 <li>you can now choose a projection pursuit index, if you have <code>mbgraphic</code> installed, try the “splines2d” index</li>
 <li>press “update results”, this will now take about a minute to optimise the index and generate the guided tour path</li>
 <li>move back to the “results” panel to view the animation, moving towards a view showing strong functional dependence</li>
+</ul>
+<p>Using the local tour and linked brushing</p>
+<ul>
 <li>once you reached the final projection move back to the “input” panel</li>
 <li>select the “Local tour” option to explore the neighborhood of the current projection</li>
 <li>select the display type “linked brushing” and press “update results”</li>
@@ -157,7 +165,7 @@
 </div>
 <div id="the-input-panel" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-input-panel" class="anchor"></a>The <code>input</code> panel</h2>
+<a href="#the-input-panel" class="anchor"></a>The input panel</h2>
 <p>The default input options are shown in the annotated image below.</p>
 <p><img src="input_annotated.png" width="70%"></p>
 <p>The following options are available:</p>
@@ -229,7 +237,7 @@
 </div>
 <div id="the-results-panel" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-results-panel" class="anchor"></a>The <code>results</code> panel</h2>
+<a href="#the-results-panel" class="anchor"></a>The results panel</h2>
 <p>An annotated example of the results display is shown below.</p>
 <p><img src="results_annotated.png" width="100%"></p>
 <p>The following options are available (some depend on display type):</p>
@@ -328,8 +336,8 @@
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#basic-usage">Basic usage</a></li>
       <li><a href="#examples">Examples</a></li>
-      <li><a href="#the-input-panel">The <code>input</code> panel</a></li>
-      <li><a href="#the-results-panel">The <code>results</code> panel</a></li>
+      <li><a href="#the-input-panel">The input panel</a></li>
+      <li><a href="#the-results-panel">The results panel</a></li>
       <li><a href="#thank-you">Thank you</a></li>
       </ul>
 </div>
