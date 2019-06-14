@@ -14,7 +14,7 @@ coveragePlot(pcaRes, n, i)
 \item{i}{Index of current projection}
 }
 \value{
-visualisation of coverage display.
+Visualisation of coverage display.
 }
 \description{
 Generating the coverage display.

@@ -14,7 +14,7 @@ plotlyAxesF(xVec, yVec, paramList)
 \item{paramList}{Vector of parameter names}
 }
 \value{
-plotly visualisation of axes
+Plotly visualisation of axes
 }
 \description{
 Generating the plotly axes display.

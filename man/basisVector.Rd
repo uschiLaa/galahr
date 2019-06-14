@@ -12,7 +12,7 @@ basisVector(i, n)
 \item{n}{number of dimensions}
 }
 \value{
-basis vector
+Basis vector
 }
 \description{
 Generate basis vector in direction i in n dimensions (i <= n)

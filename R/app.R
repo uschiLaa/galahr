@@ -1,5 +1,6 @@
 #' Shiny app for exploring high dimensional data
 #'
+#' Opening the GUI with the specified dataset.
 #' If no input data is specified the app will launch
 #' using the [tsfeatureData] example data.
 #'

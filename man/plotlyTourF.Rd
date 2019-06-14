@@ -18,7 +18,7 @@ plotlyTourF(scatterData, cubeData, hoverData, halfRange, red = FALSE)
 \item{red}{Logical, if TRUE use red markers for the scatter points}
 }
 \value{
-plotly visualisation
+Plotly visualisation
 }
 \description{
 Generating the plotly tour display.

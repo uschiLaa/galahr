@@ -2,7 +2,7 @@
 #'
 #' @param i selected direction
 #' @param n number of dimensions
-#' @return basis vector
+#' @return Basis vector
 #' @export
 basisVector <- function(i, n){
   v <- rep(0,n)
@@ -15,7 +15,7 @@ basisVector <- function(i, n){
 #' @param i first basis direction
 #' @param j second basis direction
 #' @param n number of dimensions
-#' @return basis matrix
+#' @return Basis matrix
 #' @export
 basisMatrix <- function(i, j, n){
   matrix(c(basisVector(i,n), basisVector(j,n)), ncol=2)

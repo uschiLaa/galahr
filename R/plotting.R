@@ -162,7 +162,7 @@ customLegend <- function(labs, col, halfRange){
 #' @param hoverData Data frame containing hover text in "paramT" column
 #' @param halfRange Half range for fixing axis lenght
 #' @param red Logical, if TRUE use red markers for the scatter points
-#' @return plotly visualisation
+#' @return Plotly visualisation
 #' @export
 plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
   if(red){scatterM <- getMarker("red")}
@@ -190,7 +190,7 @@ plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
 #' @param hoverData Data frame containing hover text in "paramT" column
 #' @param halfRange Half range for fixing axis lenght
 #' @param gr Vector containing group assignment for each data entry
-#' @return plotly visualisation
+#' @return Plotly visualisation
 #' @export
 plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
   tAxis <- tourAxis(halfRange)
@@ -262,7 +262,7 @@ plotly1d <- function(d1, d2, markerD1=NULL){
 #' @param xVec Vector definig x direction of the projection
 #' @param yVec Vector definig y direction of the projection
 #' @param paramList Vector of parameter names
-#' @return plotly visualisation of axes
+#' @return Plotly visualisation of axes
 #' @export
 plotlyAxesF <- function(xVec, yVec, paramList){
   ret <- plotly::plot_ly(type="scatter", mode = "lines")
@@ -302,7 +302,7 @@ plotlyAxesF <- function(xVec, yVec, paramList){
 #' @param breaks Breaks for labelling timeline axis.
 #' @param indexVals Projection pursuit index value as function of time.
 #'     (default is NULL)
-#' @return visualisation of timeline
+#' @return Visualisation of timeline
 #' @export
 ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   breaks <- breaks[breaks<maxT] # throw out breaks above maxT
@@ -327,7 +327,7 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
 #' @param pcaRes Results from [fullTourPCA()]
 #' @param n Number of input parameters
 #' @param i Index of current projection
-#' @return visualisation of coverage display.
+#' @return Visualisation of coverage display.
 #' @export
 coveragePlot <- function(pcaRes, n, i){
   ntot <- nrow(pcaRes$x)

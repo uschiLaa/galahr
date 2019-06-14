@@ -18,7 +18,7 @@ plotlyTourGrouped(scatterData, cubeData, hoverData, halfRange, gr)
 \item{gr}{Vector containing group assignment for each data entry}
 }
 \value{
-plotly visualisation
+Plotly visualisation
 }
 \description{
 Generating the plotly tour display for grouped data.

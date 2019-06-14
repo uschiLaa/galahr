@@ -14,7 +14,7 @@ basisMatrix(i, j, n)
 \item{n}{number of dimensions}
 }
 \value{
-basis matrix
+Basis matrix
 }
 \description{
 Generate 2-d basis in directions i, j in n dimensions (i,j <= n)

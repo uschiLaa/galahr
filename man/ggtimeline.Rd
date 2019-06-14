@@ -19,7 +19,7 @@ ggtimeline(anchors, current, maxT, breaks, indexVals = NULL)
 (default is NULL)}
 }
 \value{
-visualisation of timeline
+Visualisation of timeline
 }
 \description{
 Generating the timeline display.

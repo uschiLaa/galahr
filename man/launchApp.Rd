@@ -10,6 +10,7 @@ launchApp(paramDF = NULL)
 \item{paramDF}{input data to load the app with}
 }
 \description{
+Opening the GUI with the specified dataset.
 If no input data is specified the app will launch
 using the \link{tsfeatureData} example data.
 }
