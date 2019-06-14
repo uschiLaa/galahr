@@ -288,7 +288,9 @@ plotlyAxesF <- function(xVec, yVec, paramList){
                             text = paramList,
                             xref = "x",
                             yref = "y",
-                            showarrow = FALSE)
+                            showarrow = FALSE) %>%
+    plotly::config(displayModeBar=FALSE)
+
   return(ret)
 }
 
