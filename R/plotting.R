@@ -168,18 +168,19 @@ plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
   if(red){scatterM <- getMarker("red")}
   else{scatterM <- getMarker("black")}
   tAxis <- tourAxis(halfRange)
-  pRet <- plotly::plot_ly(type = "scatter") %>%
+  pRet <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
     # first trace is line connecting cube points
     plotly::add_trace(data = cubeData, x=~V1, y=~V2, inherit = FALSE,
                       type = "scatter", mode="lines", line=cubeLineStyle) %>%
     #second trace is scatter plot of projected data points
-    plotly::add_trace(data = scatterData, x=~V1, y=~V2,
+    plotly::add_trace(data = scatterData, x=~V1, y=~V2, type = "scatter",
                       marker=scatterM, mode="markers", inherit = FALSE,
                       text = paste(hoverData$paramT, sep="\n"),
                       hoverinfo = 'text') %>%
     plotly::layout(dragmode = "select", xaxis=tAxis, yaxis=tAxis,
                    showlegend = FALSE) %>%
-    plotly::toWebGL()
+    plotly::toWebGL() %>%
+    plotly::event_register("plotly_selecting")
   return(pRet)
 }
 
@@ -199,18 +200,19 @@ plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
   colrs <- markers$col # store colors for writing legend
   a <- customLegend(labs, colrs, halfRange)
   markers$col <- NULL # remove color list, now markers only contains marker color for each point
-  pRet <- plotly::plot_ly(type = "scatter") %>%
+  pRet <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
     # first trace is line connecting cube points
     plotly::add_trace(data = cubeData, x=~V1, y=~V2, inherit = FALSE,
                       type = "scatter", mode="lines", line=cubeLineStyle,
                       showlegend = FALSE) %>%
     #second trace is scatter plot of projected data points with custom marker list for grouping
-    plotly::add_trace(data = scatterData, x=~V1, y=~V2,
+    plotly::add_trace(data = scatterData, x=~V1, y=~V2, type = "scatter",
                       mode="markers", inherit = FALSE, marker=markers,
                       text = paste(hoverData$paramT, sep="\n"),
                       hoverinfo = 'text', showlegend = FALSE) %>%
     plotly::layout(dragmode = "select", xaxis=tAxis, yaxis=tAxis, annotations=a) %>%
-    plotly::toWebGL()
+    plotly::toWebGL()  %>%
+    plotly::event_register("plotly_selecting")
 
   return(pRet)
 }
@@ -252,7 +254,8 @@ plotly1d <- function(d1, d2, markerD1=NULL){
                        y = 0,
                        showarrow = FALSE
                        )
-                     )
+                     ) %>%
+      plotly::event_register("plotly_selecting")
   })
   return(cplots)
 }
@@ -306,7 +309,7 @@ plotlyAxesF <- function(xVec, yVec, paramList){
 #' @export
 ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   breaks <- breaks[breaks<maxT] # throw out breaks above maxT
-  timelinePlot <- plotly::plot_ly(type = "scatter") %>%
+  timelinePlot <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
     plotly::add_trace(y = c(0.5), x = 1:maxT, #invisible markers for click events
                       mode = "markers", marker = getSmallMarker("black", a = 0),
                       type = "scatter") %>%
@@ -318,7 +321,8 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
                       type = "scatter") %>%
     plotly::layout(xaxis=timelineAxis(maxT, breaks), yaxis = noAxisRange(0,1),
                    showlegend = FALSE, margin = plotlyMargin) %>%
-    plotly::config(displayModeBar=FALSE)
+    plotly::config(displayModeBar=FALSE) %>%
+    plotly::event_register("plotly_click")
   return(timelinePlot)
 }
 
@@ -336,7 +340,7 @@ coveragePlot <- function(pcaRes, n, i){
   x$t[ntot-n:ntot] <- "anchor"
   dpoints <- dplyr::filter(x, t=="data")
   apoints <- dplyr::filter(x, t=="anchor")
-  ret <- plotly::plot_ly(type = "scatter") %>%
+  ret <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
     plotly::add_trace(x=dpoints$PC1, y=dpoints$PC2,
                       mode = "markers", marker = getMarker("darkorchid"),
                       type = "scatter") %>%
