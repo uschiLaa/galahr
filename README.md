@@ -25,8 +25,9 @@ devtools::install_github("uschiLaa/galahr")
 ## Example
 
 You can launch the Shiny app with the default dataset or your own
-dataset. The GUI also lets you upload a new dataset that is read from
-.csv format.
+dataset. Once it appears in the RStudio Viewer, choose \`Open in
+Browser’ for the best layout. The GUI also lets you upload a new
+dataset that is read from .csv format.
 
 ``` r
 library(galahr)
