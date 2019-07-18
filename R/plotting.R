@@ -179,8 +179,7 @@ plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
                       hoverinfo = 'text') %>%
     plotly::layout(dragmode = "select", xaxis=tAxis, yaxis=tAxis,
                    showlegend = FALSE) %>%
-    plotly::toWebGL() %>%
-    plotly::event_register("plotly_selecting")
+    plotly::toWebGL()
   return(pRet)
 }
 
@@ -211,8 +210,7 @@ plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
                       text = paste(hoverData$paramT, sep="\n"),
                       hoverinfo = 'text', showlegend = FALSE) %>%
     plotly::layout(dragmode = "select", xaxis=tAxis, yaxis=tAxis, annotations=a) %>%
-    plotly::toWebGL()  %>%
-    plotly::event_register("plotly_selecting")
+    plotly::toWebGL()
 
   return(pRet)
 }
@@ -254,8 +252,7 @@ plotly1d <- function(d1, d2, markerD1=NULL){
                        y = 0,
                        showarrow = FALSE
                        )
-                     ) %>%
-      plotly::event_register("plotly_selecting")
+                     )
   })
   return(cplots)
 }
@@ -275,6 +272,12 @@ plotlyAxesF <- function(xVec, yVec, paramList){
         x=c(0,xVec[i]), y=c(0,yVec[i]), mode='lines', line=getMarker("black")
         )
   }
+  ann <- list(x = 1.1*xVec,
+              y = 1.1*yVec,
+              text = paramList,
+              xref = "x",
+              yref = "y",
+              showarrow = FALSE)
   ret <- ret %>%
     plotly::layout(xaxis=noAxis, yaxis=noAxis, showlegend = FALSE,
                    shapes = list(
@@ -285,17 +288,14 @@ plotlyAxesF <- function(xVec, yVec, paramList){
                      list(type = 'rect',
                           xref = 'x', x0 = -1.5, x1 = 1.5,
                           yref = 'y', y0 = -1.5, y1 = 1.5,
-                          line = getMarker("black")))) %>%
-    plotly::add_annotations(x = 1.1*xVec,
-                            y = 1.1*yVec,
-                            text = paramList,
-                            xref = "x",
-                            yref = "y",
-                            showarrow = FALSE) %>%
+                          line = getMarker("black"))),
+                   annotations = ann) %>%
     plotly::config(displayModeBar=FALSE)
 
   return(ret)
 }
+
+
 
 #' Generating the timeline display.
 #'
@@ -309,7 +309,7 @@ plotlyAxesF <- function(xVec, yVec, paramList){
 #' @export
 ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   breaks <- breaks[breaks<maxT] # throw out breaks above maxT
-  timelinePlot <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
+  timelinePlot <- plotly::plot_ly(type = "scatter", mode = "markers", source = "TL") %>%
     plotly::add_trace(y = c(0.5), x = 1:maxT, #invisible markers for click events
                       mode = "markers", marker = getSmallMarker("black", a = 0),
                       type = "scatter") %>%
@@ -321,8 +321,7 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
                       type = "scatter") %>%
     plotly::layout(xaxis=timelineAxis(maxT, breaks), yaxis = noAxisRange(0,1),
                    showlegend = FALSE, margin = plotlyMargin) %>%
-    plotly::config(displayModeBar=FALSE) %>%
-    plotly::event_register("plotly_click")
+    plotly::config(displayModeBar=FALSE)
   return(timelinePlot)
 }
 
@@ -387,6 +386,7 @@ updatePlots <- function(rv, session, input, output){
   yVec <- rv$fullTour[[rv$t]][,2]
   plotlyAxes <- plotlyAxesF(xVec, yVec, input$parameters)
   output$axes <- plotly::renderPlotly(plotlyAxes)
+
 
   pc1 <- rv$tourPCA$x[,1]
   pc2 <- rv$tourPCA$x[,2]

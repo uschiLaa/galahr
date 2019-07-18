@@ -259,8 +259,8 @@ launchApp <- function(paramDF = NULL) {
         shiny::renderText(formatProj(pMat, input$parameters, t))
     })
 
-    shiny::observeEvent(plotly::event_data("plotly_click"), {
-      d <- plotly::event_data("plotly_click")
+    shiny::observeEvent(plotly::event_data("plotly_click", source = "TL"), {
+      d <- plotly::event_data("plotly_click", source = "TL")
       rv$t <- d$x
       updatePlots(rv, session, input, output)
     })
@@ -322,8 +322,9 @@ launchApp <- function(paramDF = NULL) {
       {
       if (!input$displayType=="linked brushing")
         return()
-      if (is.null(plotly::event_data("plotly_selected")))
+      if (is.null(plotly::event_data("plotly_selected"))){
         return()
+      }
       # only even curve numbers are in current data sample
       newSelection <- plotly::event_data("plotly_selected") %>%
         dplyr::filter(isEven(curveNumber))
@@ -390,7 +391,6 @@ launchApp <- function(paramDF = NULL) {
           rv$on <- FALSE
           return()})
       }
-      shiny::invalidateLater(20)
       shiny::isolate({
         updatePlots(rv, session, input, output)
         # keeping track of projection index
@@ -398,6 +398,7 @@ launchApp <- function(paramDF = NULL) {
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })
+      shiny::invalidateLater(20)
 
     })
 

@@ -17,22 +17,35 @@ isEven <- function(x){
 #'     and cube points ("cube")
 #' @export
 centerAll <- function(dPoints, cPoints){
-  allPoints <- dplyr::as_tibble(dPoints) %>%
-    tibble::add_column(t="data") %>%
-    dplyr::bind_rows(tibble::add_column(
-      dplyr::as_tibble(cPoints), t="cube"))
-  centeredPoints <- dplyr::as_tibble(
-    center(dplyr::select(allPoints, -t))) %>%
-    tibble::add_column(t=allPoints$t)
-  dPoints <- centeredPoints %>%
-    dplyr::filter(t=="data") %>%
-    dplyr::select(-t)
-  cPoints <- centeredPoints %>%
-    dplyr::filter(t=="cube") %>%
-    dplyr::select(-t)
-  centeredPoints <- list("data" = dPoints, "cube" = cPoints)
-  return(centeredPoints)
+  m1 <- mean(c(dPoints[,1], cPoints[,1]))
+  m2 <- mean(c(dPoints[,2], cPoints[,2]))
+  dPoints[,1] <- dPoints[,1] - m1
+  dPoints[,2] <- dPoints[,2] - m2
+  cPoints[,1] <- cPoints[,1] - m1
+  cPoints[,2] <- cPoints[,2] - m2
+  centeredPoints <- list("data" = dplyr::as_tibble(dPoints),
+                         "cube" = dplyr::as_tibble(cPoints))
 }
+
+#centerAll <- function(dPoints, cPoints){
+#  print(dPoints)
+#  print(cPoints)
+#  allPoints <- dplyr::as_tibble(dPoints) %>%
+#    tibble::add_column(t="data") %>%
+#    dplyr::bind_rows(tibble::add_column(
+#      dplyr::as_tibble(cPoints), t="cube"))
+#  centeredPoints <- dplyr::as_tibble(
+#    center(dplyr::select(allPoints, -t))) %>%
+#    tibble::add_column(t=allPoints$t)
+#  dPoints <- centeredPoints %>%
+#    dplyr::filter(t=="data") %>%
+#    dplyr::select(-t)
+#  cPoints <- centeredPoints %>%
+#    dplyr::filter(t=="cube") %>%
+#    dplyr::select(-t)
+#  centeredPoints <- list("data" = dPoints, "cube" = cPoints)
+#  return(centeredPoints)
+#}
 
 #' Initialising the reactive values used in the app.
 #'
