@@ -68,6 +68,7 @@ launchApp <- function(paramDF = NULL) {
                    if (length(input$parameters) < 3) {
                      return()
                    }
+
                    if (input$rescale){
                      rv$dataMatrix <-
                        tourr::rescale(as.matrix(rv$d[input$parameters]))
@@ -99,10 +100,17 @@ launchApp <- function(paramDF = NULL) {
                      }
                      else grId <- NA
                      guidedTour <- getGuidedTour(input$tourIndex, grId)
+
                      rv$tourPlanes <-
                        tourr::save_history(
                          rv$dataMatrix, guidedTour, rescale = FALSE
                          )
+                     if (is.null(rv$tourPlanes)) {
+                       output$messages <- shiny::renderText(
+                         "Warning: Guided tour failed, please try a different index."
+                       )
+                       return()
+                     }
                    }
                    else if(input$tourType == "Planned tour"){
                      pathFile <- input$file2$datapath
@@ -220,6 +228,7 @@ launchApp <- function(paramDF = NULL) {
                      plotlyAxesF(xVec, yVec, input$parameters)
                    output$axes <- plotly::renderPlotly(plotlyAxes)
                    rv$init <- TRUE
+                   output$messages <- shiny::renderText("Results updated with current selection")
                  })
 
     shiny::observeEvent(input$play, {
