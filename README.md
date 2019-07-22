@@ -22,6 +22,15 @@ You can install the development version of galahr from
 devtools::install_github("uschiLaa/galahr")
 ```
 
+Note that rendering is slow with the latest version of `plotly` and we
+recommend using version 4.8 with the `galahr` package. You can install
+this version
+with:
+
+``` r
+devtools::install_version("plotly", version = "4.8.0", repos = "http://cran.us.r-project.org")
+```
+
 ## Example
 
 You can launch the Shiny app with the default dataset or your own
