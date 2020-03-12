@@ -22,9 +22,10 @@ You can install the development version of galahr from
 devtools::install_github("uschiLaa/galahr")
 ```
 
-Note that rendering is slow with the latest version of `plotly` and we
-recommend using version 4.8 with the `galahr` package. You can install
-this version
+Note that rendering is slow with the latest version of `plotly`
+(depending on the browser used). We are working on fixing this and
+currently we recommend using `plotly` version 4.8 with the `galahr`
+package. You can install this version
 with:
 
 ``` r
