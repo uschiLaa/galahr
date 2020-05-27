@@ -27,26 +27,6 @@ centerAll <- function(dPoints, cPoints){
                          "cube" = dplyr::as_tibble(cPoints))
 }
 
-#centerAll <- function(dPoints, cPoints){
-#  print(dPoints)
-#  print(cPoints)
-#  allPoints <- dplyr::as_tibble(dPoints) %>%
-#    tibble::add_column(t="data") %>%
-#    dplyr::bind_rows(tibble::add_column(
-#      dplyr::as_tibble(cPoints), t="cube"))
-#  centeredPoints <- dplyr::as_tibble(
-#    center(dplyr::select(allPoints, -t))) %>%
-#    tibble::add_column(t=allPoints$t)
-#  dPoints <- centeredPoints %>%
-#    dplyr::filter(t=="data") %>%
-#    dplyr::select(-t)
-#  cPoints <- centeredPoints %>%
-#    dplyr::filter(t=="cube") %>%
-#    dplyr::select(-t)
-#  centeredPoints <- list("data" = dPoints, "cube" = cPoints)
-#  return(centeredPoints)
-#}
-
 #' Initialising the reactive values used in the app.
 #'
 #' @param paramDF Dataframe containing the input data.
@@ -59,7 +39,6 @@ initializeReactive <- function(paramDF){
   rv$t <- 1 # tour index
   rv$s <- NULL # plotly selected points
   rv$reloadScatter <- FALSE # when resetting from "selected only" need to reload scatter plot
-  rv$subset <- FALSE # true when only sample of data points should be plotted
   rv$update <- NULL
   rv$d <- paramDF
   rv$npoint <- nrow(paramDF)
@@ -124,7 +103,7 @@ formatProj <- function(proj, params, idx){
 #' @param rv Reactive value container
 #' @keywords internal
 updateReactiveData <- function(rv){
-  rv$cdata <- (rv$selection %*% rv$fullTour[[rv$t]])
+  rv$cdata <- (rv$dataMatrix %*% rv$fullTour[[rv$t]])
   rv$cubePointProjOrig <- (rv$cubePoints %*% rv$fullTour[[rv$t]])
   centeredPoints <- centerAll(rv$cdata, rv$cubePointProjOrig)
   rv$cdata <- centeredPoints$data

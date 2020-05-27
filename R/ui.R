@@ -103,13 +103,6 @@ tabResults <- function(npoint){
                                                      label = "Show selected points only",
                                                      value = FALSE)
                                 ),
-        shiny::numericInput(
-          "sampleSize",
-          "Sample size (random selection)",
-          value = npoint,
-          min = 1,
-          max = npoint
-          ),
         shiny::conditionalPanel('input.displayType=="linked brushing"',
                                 shiny::selectInput(
                                   "selectionType",

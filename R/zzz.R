@@ -2,7 +2,7 @@
 packageStartupMessage(
 "Thanks for loading galahr, for examining high-dimensional data. To run it from the R command line, type:
 
-launchApp()
+galahr()
 
 Once it appears in the RStudio Viewer, choose `Open in Browser’ for the best layout."
 )

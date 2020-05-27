@@ -225,21 +225,16 @@ plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
 #' for linked brushing, highlighting points in the tour display based on
 #' selection on parameter values.
 #'
-#' @param d1 Data points in currently selected sample
-#' @param d2 Data points outside the currently selected sample
+#' @param d Data points in currently selected sample
 #' @param markerD1 Custom marker (list) for d1, if NULL use default markers.
 #' @return List of plotly visualisations
 #' @export
-plotly1d <- function(d1, d2, markerD1=NULL){
-  if(nrow(d2)>0){y2 <- c(0)}
-  else{y2 <- NULL}
-  if(is.null(markerD1)){markerD1 <- getMarker("black")}
-  varList <- colnames(d1)
+plotly1d <- function(d, marker=NULL){
+  if(is.null(marker)){marker <- getMarker("black")}
+  varList <- colnames(d)
   cplots <- lapply(varList, function(var) {
-    plotly::plot_ly(d1, y = c(0), x = stats::as.formula(paste0("~", var)),
-                    mode = "markers", marker = markerD1, type = "scatter") %>%
-      plotly::add_trace(data=d2, y=y2, x=stats::as.formula(paste0("~", var)),
-                marker=getMarker("black",0)) %>%
+    plotly::plot_ly(d, y = c(0), x = stats::as.formula(paste0("~", var)),
+                    mode = "markers", marker = marker, type = "scatter") %>%
       plotly::layout(dragmode = "select", yaxis = noAxis, showlegend=FALSE,
                      annotations =list(
                        text = paste0(var),

@@ -7,17 +7,16 @@
 #' @param paramDF input data to load the app with
 #' @export
 #' @examples \dontrun{
-#' launchApp()
-#' launchApp(paramDF = GW170817)
+#' galahr()
+#' galahr(paramDF = GW170817)
 #' }
-launchApp <- function(paramDF = NULL) {
+galahr <- function(paramDF = NULL) {
   if (is.null(paramDF)) {
     paramDF <- tsfeatureData
   }
 
   params <- names(paramDF)[purrr::map_lgl(paramDF, is.numeric)]
   npoint <- nrow(paramDF)
-
 
   server <- function(input, output, session) {
 
@@ -164,7 +163,6 @@ launchApp <- function(paramDF = NULL) {
                        )
                    rv$selection <- rv$dataMatrix
                    rv$resetSelection <- rv$dataMatrix
-                   rv$resetSample <- FALSE
                    rv$tmax <- length(rv$fullTour)
                    rv$t <- 1
                    rv$timelineAxis <- pretty(c(1, rv$tmax))
@@ -174,15 +172,11 @@ launchApp <- function(paramDF = NULL) {
                          rv$anchors, 1, rv$tmax, rv$timelineAxis, rv$pathIndex
                          )
                        )
-                   # for use when selecting samples, define separate data frames
-                   rv$inSample <- rv$d
-                   rv$outOfSample <-rv$d[0,]
                    # get points on hypercube
                    rv$cubePoints <-
                      cubePoints(length(input$parameters), rv$dataMatrix)
                    # 1-d parameter values
-                   pPlots <-
-                     plotly1d(rv$d, rv$outOfSample)
+                   pPlots <-plotly1d(rv$d)
                    rv$h1d <- min(0.05, 1/length(pPlots))
                    output$params <- plotly::renderPlotly({
                      plotly::subplot(
@@ -274,58 +268,6 @@ launchApp <- function(paramDF = NULL) {
       updatePlots(rv, session, input, output)
     })
 
-    shiny::observeEvent(input$sampleSize, {
-      if (is.null(rv$npoint) | is.null(rv$inSample) | !rv$init) {
-        return()
-      }
-      if (input$sampleSize < 1 | is.na(input$sampleSize)) {
-        return()
-      }
-      if (input$sampleSize != rv$npoint |
-          nrow(rv$inSample) < rv$npoint) {
-        if(rv$resetSample) {
-          rv$selection <- rv$resetSelection
-        }
-        selection <- sample(rv$npoint, size = input$sampleSize)
-        if(input$sampleSize==1){
-          rv$inSample <- dplyr::as_tibble(t(rv$selection[selection, ]))
-        }
-        else  rv$inSample <- dplyr::as_tibble(rv$selection[selection, ])
-        if(rv$npoint-input$sampleSize==1){
-          rv$outOfSample <- dplyr::as_tibble(t(rv$selection[-selection, ]))
-        }
-        else rv$outOfSample <- dplyr::as_tibble(rv$selection[-selection, ])
-        rv$dataMatrix <- as.matrix(rv$inSample[input$parameters])
-        rv$selection <-
-          rv$dataMatrix #FIXME do I need two copies of this??
-        hoverTextDf <- hoverText(rv$inSample, input$parameters)
-        updateReactiveData(rv)
-        if ((input$displayType == "groups") && (input$groupVar!="None")){
-          plotlyTour <-
-            plotlyTourGrouped(rv$cdata, rv$cubeLine, hoverTextDf,
-                                rv$halfRange,
-                                rv$groups[[input$groupVar]][selection])
-        }
-        else{
-          plotlyTour <-
-            plotlyTourF(rv$cdata, rv$cubeLine, hoverTextDf, rv$halfRange)
-        }
-        output$tour <- plotly::renderPlotly(plotlyTour)
-        pPlots <-
-          plotly1d(rv$inSample, rv$outOfSample)
-        output$params <- plotly::renderPlotly({
-          plotly::subplot(
-            pPlots,
-            nrows = length(pPlots),
-            heights = rep(rv$h1d, length(pPlots)),
-            margin = 0.03
-          ) %>%
-            plotly::layout(title = "Parameter values")
-        })
-        rv$resetSample <- TRUE
-      }
-    }, ignoreInit = TRUE)
-
     shiny::observeEvent(
       c(plotly::event_data("plotly_selected"), input$selectedOnly),
       {
@@ -377,7 +319,6 @@ launchApp <- function(paramDF = NULL) {
       }
       pPlots <-
         plotly1d(rv$inSample,
-                  rv$outOfSample,
                   list(color = markers))
       output$params <- plotly::renderPlotly({
         plotly::subplot(
@@ -389,6 +330,7 @@ launchApp <- function(paramDF = NULL) {
           plotly::layout(title = "Parameter values")
       })
     }, ignoreInit = TRUE)
+
 
     shiny::observe({
       if (!rv$on) {
@@ -407,7 +349,7 @@ launchApp <- function(paramDF = NULL) {
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })
-      shiny::invalidateLater(20)
+      shiny::invalidateLater(10)
 
     })
 
