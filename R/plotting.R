@@ -383,12 +383,12 @@ updatePlots <- function(rv, session, input, output){
   output$axes <- plotly::renderPlotly(plotlyAxes)
 
 
-  pc1 <- rv$tourPCA$x[,1]
-  pc2 <- rv$tourPCA$x[,2]
-  plotly::plotlyProxy("coverageDisplay",session) %>%
-    plotly::plotlyProxyInvoke("restyle", list(
-      x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
-      y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),
-      list(3))
+  #pc1 <- rv$tourPCA$x[,1]
+  #pc2 <- rv$tourPCA$x[,2]
+  #plotly::plotlyProxy("coverageDisplay",session) %>%
+  ##  plotly::plotlyProxyInvoke("restyle", list(
+  #    x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
+  #    y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),
+  #    list(3))
 
 }

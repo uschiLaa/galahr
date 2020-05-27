@@ -55,12 +55,6 @@ galahr2 <- function(paramDF = NULL) {
                           )
                           rv$anchors <- which(attributes(fullTour)$new_basis)
                           rv$fullTour <- as.list(fullTour)
-                          rv$tourPCA <-
-                            fullTourPCA(rv$fullTour, length(input$parameters))
-                          output$coverageDisplay <-
-                            plotly::renderPlotly(
-                              coveragePlot(rv$tourPCA, length(input$parameters), 1)
-                            )
                           rv$tmax <- length(rv$fullTour)
                           rv$t <- 1
                           rv$timelineAxis <- pretty(c(1, rv$tmax))
@@ -116,7 +110,7 @@ galahr2 <- function(paramDF = NULL) {
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })
-      shiny::invalidateLater(10)
+      shiny::invalidateLater(20)
 
     })
 
