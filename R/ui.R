@@ -76,10 +76,9 @@ tabInput <- function(params){
 
 #' Generating layout for the results tab panel.
 #'
-#' @param npoint The number of points in the input data set.
 #' @return The complete shiny tabPanel.
 #' @keywords internal
-tabResults <- function(npoint){
+tabResults <- function(){
   shiny::tabPanel("results", shiny::fluidPage(
     shiny::fluidRow(
       shiny::column(
@@ -116,11 +115,6 @@ tabResults <- function(npoint){
         htmltools::div(style = "display:inline-block",
                        plotly::plotlyOutput("axes", width = 200, height = 200)
                        ),
-        #htmltools::div(style = "display:inline-block",
-        #               plotly::plotlyOutput("coverageDisplay",
-        #                                    width = 200,
-        #                                    height = 200)
-        #),
         shiny::conditionalPanel('input.displayType=="linked brushing"',
                                 shiny::verbatimTextOutput("range")),
         shiny::verbatimTextOutput("projPrint")
@@ -135,15 +129,15 @@ tabResults <- function(npoint){
                                             width = 750,
                                             height = 50)
         )
-        )#,
-      #shiny::column(
-      #  width = 3,
-      #  htmltools::div(style = "display:inline-block",
-      #                 plotly::plotlyOutput("params",
-      #                                      width = 300,
-      #                                      height = 750)
-      #                 )
-      #  )
+        ),
+      shiny::column(
+        width = 3,
+        htmltools::div(style = "display:inline-block",
+                       plotly::plotlyOutput("params",
+                                            width = 300,
+                                            height = 750)
+                       )
+        )
       )
     ))
 }
@@ -152,14 +146,13 @@ tabResults <- function(npoint){
 #' Generating the shiny ui.
 #'
 #' @param params The input parameters for parameter selection checkbox input.
-#' @param npoint The number of points in the input data set.
 #' @return The complete shiny fluidPage UI.
 #' @keywords internal
-ui <- function(params, npoint){
+ui <- function(params){
   shiny::fluidPage(
   theme = shinythemes::shinytheme("simplex"),
   shiny::navbarPage(
     "galahr",
     tabInput(params),
-    tabResults(npoint)))
+    tabResults()))
 }

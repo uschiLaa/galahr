@@ -16,11 +16,11 @@ galahr <- function(paramDF = NULL) {
   }
 
   params <- names(paramDF)[purrr::map_lgl(paramDF, is.numeric)]
-  npoint <- nrow(paramDF)
 
   server <- function(input, output, session) {
 
     rv <- initializeReactive(paramDF)
+    shiny::isolate(d <- initializeData(paramDF, rv$numVars, rv$groupVars)) #data container (not a reactive value!)
 
     shiny::isolate({
       if (sum(rv$groupVars)) {
@@ -38,6 +38,7 @@ galahr <- function(paramDF = NULL) {
         return()
       }
       readInput(input$file1, rv, output, session)
+      d <<- initializeData(paramDF, rv$numVars, rv$groupVars) #data container (not a reactive value!)
     })
 
     shiny::observeEvent(c(input$displayType,input$groupVar), {
@@ -69,17 +70,17 @@ galahr <- function(paramDF = NULL) {
                    }
 
                    if (input$rescale){
-                     rv$dataMatrix <-
-                       tourr::rescale(as.matrix(rv$d[input$parameters]))
+                     d$dataMatrix <<-
+                       tourr::rescale(as.matrix(d$d[input$parameters]))
                    }
                    else {
-                     rv$dataMatrix <-
-                       as.matrix(rv$d[input$parameters])
+                     d$dataMatrix <<-
+                       as.matrix(d$d[input$parameters])
                    }
 
                    if(input$tourType == "Grand tour"){
                      rv$tourPlanes <-
-                       tourr::save_history(rv$dataMatrix,
+                       tourr::save_history(d$dataMatrix,
                                            tourr::grand_tour(),
                                            max_bases = input$nPlanes,
                                            rescale = FALSE)
@@ -87,7 +88,7 @@ galahr <- function(paramDF = NULL) {
                    }
                    else if(input$tourType == "Little tour"){
                      rv$tourPlanes <-
-                       tourr::save_history(rv$dataMatrix,
+                       tourr::save_history(d$dataMatrix,
                                            tourr::little_tour(),
                                            max_bases = input$nPlanes,
                                            rescale = FALSE)
@@ -102,7 +103,7 @@ galahr <- function(paramDF = NULL) {
 
                      rv$tourPlanes <-
                        tourr::save_history(
-                         rv$dataMatrix, guidedTour, rescale = FALSE
+                         d$dataMatrix, guidedTour, rescale = FALSE
                          )
                      if (is.null(rv$tourPlanes)) {
                        output$messages <- shiny::renderText(
@@ -126,7 +127,7 @@ galahr <- function(paramDF = NULL) {
                        r2 <- tourr::basis_random(ndim)
                        rv$tourPlanes <- append(list(r1, r2), rv$tourPlanes)
                        rv$tourPlanes <- tourr::save_history(
-                         rv$dataMatrix,
+                         d$dataMatrix,
                          tourr::planned_tour(rv$tourPlanes),
                          rescale = FALSE
                          )
@@ -138,7 +139,7 @@ galahr <- function(paramDF = NULL) {
                        start <- tourr::basis_init(length(input$parameters), 2)
                      }
                      rv$tourPlanes <-
-                       tourr::save_history(rv$dataMatrix,
+                       tourr::save_history(d$dataMatrix,
                                            tourr::local_tour(start),
                                            max_bases = input$nPlanes,
                                            rescale = FALSE)
@@ -155,14 +156,8 @@ galahr <- function(paramDF = NULL) {
                    }
                    rv$anchors <- which(attributes(fullTour)$new_basis)
                    rv$fullTour <- as.list(fullTour)
-                   rv$tourPCA <-
-                     fullTourPCA(rv$fullTour, length(input$parameters))
-                   output$coverageDisplay <-
-                     plotly::renderPlotly(
-                       coveragePlot(rv$tourPCA, length(input$parameters), 1)
-                       )
-                   rv$selection <- rv$dataMatrix
-                   rv$resetSelection <- rv$dataMatrix
+
+                   d$selection <<- d$dataMatrix
                    rv$tmax <- length(rv$fullTour)
                    rv$t <- 1
                    rv$timelineAxis <- pretty(c(1, rv$tmax))
@@ -174,9 +169,9 @@ galahr <- function(paramDF = NULL) {
                        )
                    # get points on hypercube
                    rv$cubePoints <-
-                     cubePoints(length(input$parameters), rv$dataMatrix)
+                     cubePoints(length(input$parameters), d$dataMatrix)
                    # 1-d parameter values
-                   pPlots <-plotly1d(rv$d)
+                   pPlots <-plotly1d(d$d)
                    rv$h1d <- min(0.05, 1/length(pPlots))
                    output$params <- plotly::renderPlotly({
                      plotly::subplot(
@@ -189,11 +184,11 @@ galahr <- function(paramDF = NULL) {
                    })
                    # calculate projected data and cube points
                    # for first projection
-                   updateReactiveData(rv)
+                   d$plotData <<- plotData(d, rv)
                    #hover text should contain all function and parameter values
-                   hoverTextDf <- hoverText(rv$d, input$parameters)
+                   hoverTextDf <- hoverText(d$d, input$parameters)
                    rv$halfRange <-
-                     compute_half_range(NULL, rv$dataMatrix, TRUE) * 1.3
+                     compute_half_range(NULL, d$dataMatrix, TRUE) * 1.3
                    # now can draw tour display
                    # different function used when drawing grouped data
                    # (mapping group to color)
@@ -202,14 +197,14 @@ galahr <- function(paramDF = NULL) {
                      (input$groupVar !=" None")
                      ){
                      plotlyTour <-
-                       plotlyTourGrouped(rv$cdata, rv$cubeLine,
+                       plotlyTourGrouped(d$plotData$cdata, d$plotData$cubeLine,
                                            hoverTextDf, rv$halfRange,
                                            rv$groups[[input$groupVar]]
                                            )
                    }
                    else{
                      plotlyTour <-
-                       plotlyTourF(rv$cdata, rv$cubeLine,
+                       plotlyTourF(d$plotData$cdata, d$plotData$cubeLine,
                                    hoverTextDf, rv$halfRange)
                    }
                    output$tour <- plotly::renderPlotly({
@@ -263,9 +258,8 @@ galahr <- function(paramDF = NULL) {
     })
 
     shiny::observeEvent(plotly::event_data("plotly_click", source = "TL"), {
-      d <- plotly::event_data("plotly_click", source = "TL")
-      rv$t <- d$x
-      updatePlots(rv, session, input, output)
+      rv$t <- plotly::event_data("plotly_click", source = "TL")$x
+      updatePlots(d, rv, session, input, output)
     })
 
     shiny::observeEvent(
@@ -297,20 +291,20 @@ galahr <- function(paramDF = NULL) {
         markers <- rep(plotly::toRGB("black", alpha = 0), rv$npoint)
         markers[rv$s] <- plotly::toRGB("red")
         rv$reloadScatter <- TRUE
-        rv$selection <- rv$dataMatrix[rv$s, ]
-        updateReactiveData(rv)
-        hoverC <- hoverText(rv$d[rv$s, ], input$parameters)
+        d$selection <<- d$dataMatrix[rv$s, ]
+        d$plotData <<- plotData(d, rv)
+        hoverC <- hoverText(d$d[rv$s, ], input$parameters)
         plotlyTour <-
-          plotlyTourF(rv$cdata, rv$cubeLine, hoverC, rv$halfRange, red = TRUE)
+          plotlyTourF(d$plotData$cdata, d$plotData$cubeLine, hoverC, rv$halfRange, red = TRUE)
         output$tour <- plotly::renderPlotly(plotlyTour)
       }
       else{
         if (rv$reloadScatter) {
-          rv$selection <- rv$dataMatrix
+          d$selection <<- d$dataMatrix
           cHoverT <- hoverText(rv$inSample, input$parameters)
-          updateReactiveData(rv)
+          d$plotData <<- plotData(d, rv)
           pTemp <-
-            plotlyTourF(rv$cdata, rv$cubeLine, cHoverT, rv$halfRange)
+            plotlyTourF(d$plotData$cdata, d$plotData$cubeLine, cHoverT, rv$halfRange)
           output$tour <- plotly::renderPlotly(pTemp)
           rv$reloadScatter <- FALSE
         }
@@ -343,7 +337,7 @@ galahr <- function(paramDF = NULL) {
           return()})
       }
       shiny::isolate({
-        updatePlots(rv, session, input, output)
+        updatePlots(d, rv, session, input, output)
         # keeping track of projection index
         # reset to 1 when reaching final projection
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
@@ -356,6 +350,6 @@ galahr <- function(paramDF = NULL) {
 
   }
 
-  shiny::shinyApp(ui(params, npoint), server)
+  shiny::shinyApp(ui(params), server)
 }
 

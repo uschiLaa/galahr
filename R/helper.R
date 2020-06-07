@@ -40,10 +40,22 @@ initializeReactive <- function(paramDF){
   rv$s <- NULL # plotly selected points
   rv$reloadScatter <- FALSE # when resetting from "selected only" need to reload scatter plot
   rv$update <- NULL
-  rv$d <- paramDF
   rv$npoint <- nrow(paramDF)
-  shiny::isolate(splitInput(paramDF, rv))
+  rv$numVars <- purrr::map_lgl(paramDF, is.numeric)
+  rv$groupVars <- purrr::map_lgl(paramDF, is.character)
   return(rv)
+}
+
+#' Initialising the data list used in the app.
+#'
+#' @param paramDF Dataframe containing the input data.
+#' @return Reactive value container.
+#' @keywords internal
+initializeData <- function(paramDF, numVars, groupVars){
+  d <- list()
+  d$d <- paramDF[numVars]
+  d$groups <- paramDF[groupVars]
+  return(d)
 }
 
 #' Generate hover text for each data point.
@@ -102,38 +114,17 @@ formatProj <- function(proj, params, idx){
 #'
 #' @param rv Reactive value container
 #' @keywords internal
-updateReactiveData <- function(rv){
-  rv$cdata <- (rv$dataMatrix %*% rv$fullTour[[rv$t]])
-  rv$cubePointProjOrig <- (rv$cubePoints %*% rv$fullTour[[rv$t]])
-  centeredPoints <- centerAll(rv$cdata, rv$cubePointProjOrig)
-  rv$cdata <- centeredPoints$data
+plotData <- function(d, rv){
+  ret <- list()
+  pdata <- (d$dataMatrix %*% rv$fullTour[[rv$t]])
+  cubePointProjOrig <- (rv$cubePoints %*% rv$fullTour[[rv$t]])
+  centeredPoints <- centerAll(pdata, cubePointProjOrig)
+  ret$cdata <- centeredPoints$data
   cubePointProj <- centeredPoints$cube
   chidx <- grDevices::chull(cubePointProj)
-  rv$cubeLine <- (cubePointProj[c(chidx, chidx[1]),])
-
+  ret$cubeLine <- (cubePointProj[c(chidx, chidx[1]),])
+  ret
 }
-
-#' PCA over the projection vectors in the tour sequence.
-#'
-#' @param fullTour List of projections in interpolated tour path.
-#' @param n Number of parameters.
-#' @return prcomp output over all vectors in the path.
-#' @export
-fullTourPCA <- function(fullTour, n){
-  allVectors <- NULL
-  # split all projection matrices appearing in the path into vectors
-  # collect in allVectors
-  for(tourStep in fullTour){
-    allVectors <- rbind(allVectors,tourStep[,1])
-    allVectors <- rbind(allVectors,tourStep[,2])
-  }
-  # adding unit vectors in each parameter direction as anchor points
-  allVectors <- rbind(allVectors, diag(1, n))
-  # running the PCA on the resulting set of vectors
-  tourPCA <- stats::prcomp(allVectors)
-  return(tourPCA)
-}
-
 
 ###################
 # functions below are transforming existing functions for variable selection

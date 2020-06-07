@@ -229,7 +229,8 @@ plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
 #' @param markerD1 Custom marker (list) for d1, if NULL use default markers.
 #' @return List of plotly visualisations
 #' @export
-plotly1d <- function(d, marker=NULL){
+plotly1d <- function(d_in, marker=NULL){
+  d <- d_in # making sure the input data is not a reactive value
   if(is.null(marker)){marker <- getMarker("black")}
   varList <- colnames(d)
   cplots <- lapply(varList, function(var) {
@@ -290,8 +291,6 @@ plotlyAxesF <- function(xVec, yVec, paramList){
   return(ret)
 }
 
-
-
 #' Generating the timeline display.
 #'
 #' @param anchors Anchor plane indexes in the timeline
@@ -320,37 +319,6 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   return(timelinePlot)
 }
 
-#' Generating the coverage display.
-#'
-#' @param pcaRes Results from [fullTourPCA()]
-#' @param n Number of input parameters
-#' @param i Index of current projection
-#' @return Visualisation of coverage display.
-#' @export
-coveragePlot <- function(pcaRes, n, i){
-  ntot <- nrow(pcaRes$x)
-  x <- dplyr::as_tibble(pcaRes$x) %>%
-    dplyr::mutate(t = "data")
-  x$t[ntot-n:ntot] <- "anchor"
-  dpoints <- dplyr::filter(x, t=="data")
-  apoints <- dplyr::filter(x, t=="anchor")
-  ret <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
-    plotly::add_trace(x=dpoints$PC1, y=dpoints$PC2,
-                      mode = "markers", marker = getMarker("darkorchid"),
-                      type = "scatter") %>%
-    plotly::add_trace(x=apoints$PC1, y=apoints$PC2,
-                      mode = "markers", marker = getMarker("chartreuse3"),
-                      type = "scatter") %>%
-    plotly::add_trace(x = c(apoints$PC1[2*i], apoints$PC1[2*i-1]),
-                      y = c(apoints$PC2[2*i], apoints$PC2[2*i-1]),
-                      mode = "markers", marker = getMarker("black"),
-                      type = "scatter") %>%
-    plotly::layout(xaxis=noAxis, yaxis = noAxis,
-                   showlegend = FALSE, margin=coverageDispMargin) %>%
-    plotly::config(displayModeBar=FALSE)
-  return(ret)
-}
-
 #' Update all plots to current projection.
 #'
 #' @param rv Reactive value container
@@ -358,16 +326,16 @@ coveragePlot <- function(pcaRes, n, i){
 #' @param input shiny input container
 #' @param output shiny output container
 #' @keywords internal
-updatePlots <- function(rv, session, input, output){
-  updateReactiveData(rv)
+updatePlots <- function(d, rv, session, input, output){
+  d$plotData <- plotData(d, rv)
   plotly::plotlyProxy("tour",session) %>%
     plotly::plotlyProxyInvoke("restyle",
-                              list(x = list(rv$cdata$V1),
-                                   y = list(rv$cdata$V2)),
+                              list(x = list(d$plotData$cdata$V1),
+                                   y = list(d$plotData$cdata$V2)),
                               list(2)) %>%
     plotly::plotlyProxyInvoke("restyle",
-                              list(x = list(rv$cubeLine$V1),
-                                   y = list(rv$cubeLine$V2)),
+                              list(x = list(d$plotData$cubeLine$V1),
+                                   y = list(d$plotData$cubeLine$V2)),
                               list(1))
 
   #reminder: restyle only works for more than one point in the trace
@@ -382,13 +350,5 @@ updatePlots <- function(rv, session, input, output){
   plotlyAxes <- plotlyAxesF(xVec, yVec, input$parameters)
   output$axes <- plotly::renderPlotly(plotlyAxes)
 
-
-  #pc1 <- rv$tourPCA$x[,1]
-  #pc2 <- rv$tourPCA$x[,2]
-  #plotly::plotlyProxy("coverageDisplay",session) %>%
-  ##  plotly::plotlyProxyInvoke("restyle", list(
-  #    x = list(c(pc1[2*rv$t], pc1[2*rv$t-1])),
-  #    y = list(c(pc2[2*rv$t], pc2[2*rv$t-1]))),
-  #    list(3))
 
 }
