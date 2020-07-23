@@ -164,7 +164,7 @@ customLegend <- function(labs, col, halfRange){
 #' @param red Logical, if TRUE use red markers for the scatter points
 #' @return Plotly visualisation
 #' @export
-plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
+plotlyTourDisp <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
   if(red){scatterM <- getMarker("red")}
   else{scatterM <- getMarker("black")}
   tAxis <- tourAxis(halfRange)
@@ -328,6 +328,7 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
 #' @keywords internal
 updatePlots <- function(d, rv, session, input, output){
   d$plotData <- plotData(d, rv)
+  t <- rv$t
   plotly::plotlyProxy("tour",session) %>%
     plotly::plotlyProxyInvoke("restyle",
                               list(x = list(d$plotData$cdata$V1),
@@ -341,12 +342,12 @@ updatePlots <- function(d, rv, session, input, output){
   #reminder: restyle only works for more than one point in the trace
   plotly::plotlyProxy("ggtimeline",session) %>%
     plotly::plotlyProxyInvoke("restyle",
-                              list(x = list(c(rv$t, rv$t))),
+                              list(x = list(c(t, t))),
                               list(3))
 
   # redraw axes
-  xVec <- rv$fullTour[[rv$t]][,1]
-  yVec <- rv$fullTour[[rv$t]][,2]
+  xVec <- d$fullTour[[t]][,1]
+  yVec <- d$fullTour[[t]][,2]
   plotlyAxes <- plotlyAxesF(xVec, yVec, input$parameters)
   output$axes <- plotly::renderPlotly(plotlyAxes)
 

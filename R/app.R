@@ -20,26 +20,29 @@ galahr <- function(paramDF = NULL) {
   server <- function(input, output, session) {
 
     rv <- initializeReactive(paramDF)
-    shiny::isolate(d <- initializeData(paramDF, rv$numVars, rv$groupVars)) #data container (not a reactive value!)
+    shiny::isolate(
+      d <- initializeData(paramDF)
+      ) #data container (not a reactive value!)
 
     shiny::isolate({
-      if (sum(rv$groupVars)) {
+      if (sum(d$groupVars)) {
         shiny::updateSelectInput(session,
                                "groupVar",
-                               choices = names(rv$groups))}
+                               choices = names(d$groups))}
       else {
         shiny::updateSelectInput(session,
                                  "groupVar",
                                  choices = c("None"))
       }})
 
-    shiny::observeEvent(input$file1, {
-      if (is.null(input$file1)) {
-        return()
-      }
-      readInput(input$file1, rv, output, session)
-      d <<- initializeData(paramDF, rv$numVars, rv$groupVars) #data container (not a reactive value!)
-    })
+    ####FIXME think about data upload later
+  #  shiny::observeEvent(input$file1, {
+  #    if (is.null(input$file1)) {
+  #      return()
+  #    }
+  #    d <<- readInput(input$file1, rv, output, session)
+  #    d <<- initializeData(paramDF, rv$numVars, rv$groupVars) #data container (not a reactive value!)
+  #  })
 
     shiny::observeEvent(c(input$displayType,input$groupVar), {
       if ((input$displayType != "groups") | (input$groupVar=="None")){
@@ -79,7 +82,7 @@ galahr <- function(paramDF = NULL) {
                    }
 
                    if(input$tourType == "Grand tour"){
-                     rv$tourPlanes <-
+                     d$tourPlanes <<-
                        tourr::save_history(d$dataMatrix,
                                            tourr::grand_tour(),
                                            max_bases = input$nPlanes,
@@ -87,7 +90,7 @@ galahr <- function(paramDF = NULL) {
                      rv$pathIndex <- NULL
                    }
                    else if(input$tourType == "Little tour"){
-                     rv$tourPlanes <-
+                     d$tourPlanes <<-
                        tourr::save_history(d$dataMatrix,
                                            tourr::little_tour(),
                                            max_bases = input$nPlanes,
@@ -96,16 +99,16 @@ galahr <- function(paramDF = NULL) {
                    }
                    else if(input$tourType == "Guided tour"){
                      if (input$tourIndex %in% groupedIndex){
-                       grId <- as.factor(rv$groups[[input$groupVar]])
+                       grId <- as.factor(d$groups[[input$groupVar]])
                      }
                      else grId <- NA
                      guidedTour <- getGuidedTour(input$tourIndex, grId)
 
-                     rv$tourPlanes <-
+                     d$tourPlanes <<-
                        tourr::save_history(
                          d$dataMatrix, guidedTour, rescale = FALSE
                          )
-                     if (is.null(rv$tourPlanes)) {
+                     if (is.null(d$tourPlanes)) {
                        output$messages <- shiny::renderText(
                          "Warning: Guided tour failed, please try a different index."
                        )
@@ -114,7 +117,7 @@ galahr <- function(paramDF = NULL) {
                    }
                    else if(input$tourType == "Planned tour"){
                      pathFile <- input$file2$datapath
-                     rv$tourPlanes <- readRDS(pathFile)
+                     d$tourPlanes <<- readRDS(pathFile)
                      # input could be either history array
                      # in which case we don't need to do anything
                      # or could be a list of matrices defining the planes
@@ -122,19 +125,19 @@ galahr <- function(paramDF = NULL) {
                      if(is.null(attr(rv$tourPlanes, "class"))){
                        # since planned tour skips first two entries
                        # we add random ones
-                       ndim <- nrow(rv$tourPlanes[[1]])
+                       ndim <- nrow(d$tourPlanes[[1]])
                        r1 <- tourr::basis_random(ndim)
                        r2 <- tourr::basis_random(ndim)
-                       rv$tourPlanes <- append(list(r1, r2), rv$tourPlanes)
-                       rv$tourPlanes <- tourr::save_history(
+                       d$tourPlanes <- append(list(r1, r2), rv$tourPlanes)
+                       d$tourPlanes <<- tourr::save_history(
                          d$dataMatrix,
-                         tourr::planned_tour(rv$tourPlanes),
+                         tourr::planned_tour(d$tourPlanes),
                          rescale = FALSE
                          )
                    }
                    }
                    else if(input$tourType == "Local tour"){
-                     start <- rv$fullTour[[rv$t]]
+                     start <- d$fullTour[[rv$t]]
                      if (nrow(start) != length(input$parameters)){
                        start <- tourr::basis_init(length(input$parameters), 2)
                      }
@@ -144,21 +147,21 @@ galahr <- function(paramDF = NULL) {
                                            max_bases = input$nPlanes,
                                            rescale = FALSE)
                    }
-                   fullTour <- tourr::interpolate(
-                     rv$tourPlanes, angle = input$angle
+                   fullTour <<- tourr::interpolate(
+                     d$tourPlanes, angle = input$angle
                      )
                    if(input$tourType == "Guided tour"){
                      #FIXME this is not currently displayed
                      #fix display or remove computation
-                     rv$pathIndex <- getPathIndex(
+                     d$pathIndex <<- getPathIndex(
                        fullTour, input$tourIndex, grId
                        )
                    }
                    rv$anchors <- which(attributes(fullTour)$new_basis)
-                   rv$fullTour <- as.list(fullTour)
+                   d$fullTour <- as.list(fullTour)
 
                    d$selection <<- d$dataMatrix
-                   rv$tmax <- length(rv$fullTour)
+                   rv$tmax <- length(d$fullTour)
                    rv$t <- 1
                    rv$timelineAxis <- pretty(c(1, rv$tmax))
                    output$ggtimeline <-
@@ -184,10 +187,10 @@ galahr <- function(paramDF = NULL) {
                    })
                    # calculate projected data and cube points
                    # for first projection
-                   d$plotData <<- plotData(d, rv)
+                   plotData <- plotData(d, rv)
                    #hover text should contain all function and parameter values
                    hoverTextDf <- hoverText(d$d, input$parameters)
-                   rv$halfRange <-
+                   d$halfRange <<-
                      compute_half_range(NULL, d$dataMatrix, TRUE) * 1.3
                    # now can draw tour display
                    # different function used when drawing grouped data
@@ -197,22 +200,22 @@ galahr <- function(paramDF = NULL) {
                      (input$groupVar !=" None")
                      ){
                      plotlyTour <-
-                       plotlyTourGrouped(d$plotData$cdata, d$plotData$cubeLine,
-                                           hoverTextDf, rv$halfRange,
+                       plotlyTourGrouped(plotData$cdata, plotData$cubeLine,
+                                           hoverTextDf, d$halfRange,
                                            rv$groups[[input$groupVar]]
                                            )
                    }
                    else{
                      plotlyTour <-
-                       plotlyTourF(d$plotData$cdata, d$plotData$cubeLine,
-                                   hoverTextDf, rv$halfRange)
+                       plotlyTourDisp(plotData$cdata, plotData$cubeLine,
+                                   hoverTextDf, d$halfRange)
                    }
                    output$tour <- plotly::renderPlotly({
                      plotlyTour
                    })
                    # final step: draw axes display
-                   xVec <- rv$fullTour[[1]][, 1]
-                   yVec <- rv$fullTour[[1]][, 2]
+                   xVec <- d$fullTour[[1]][, 1]
+                   yVec <- d$fullTour[[1]][, 2]
                    plotlyAxes <-
                      plotlyAxesF(xVec, yVec, input$parameters)
                    output$axes <- plotly::renderPlotly(plotlyAxes)
@@ -234,10 +237,10 @@ galahr <- function(paramDF = NULL) {
     })
 
     shiny::observeEvent(input$save, {
-      if (is.null(rv$fullTour)) {
+      if (is.null(d$fullTour)) {
         return()
       }
-      pMat <- rv$fullTour[[rv$t]]
+      pMat <- d$fullTour[[rv$t]]
       saveRDS(pMat, file = paste0("tour_projection_", rv$t, ".rds"))
     })
 
@@ -247,15 +250,6 @@ galahr <- function(paramDF = NULL) {
       saveRDS(anchorPlanes, file = "anchor_planes.rds")
     })
 
-    shiny::observeEvent(input$print, {
-      if (is.null(rv$fullTour)) {
-        return()
-      }
-      pMat <- rv$fullTour[[rv$t]]
-      t <- rv$t
-      output$projPrint <-
-        shiny::renderText(formatProj(pMat, input$parameters, t))
-    })
 
     shiny::observeEvent(plotly::event_data("plotly_click", source = "TL"), {
       rv$t <- plotly::event_data("plotly_click", source = "TL")$x
@@ -295,7 +289,7 @@ galahr <- function(paramDF = NULL) {
         d$plotData <<- plotData(d, rv)
         hoverC <- hoverText(d$d[rv$s, ], input$parameters)
         plotlyTour <-
-          plotlyTourF(d$plotData$cdata, d$plotData$cubeLine, hoverC, rv$halfRange, red = TRUE)
+          plotlyTourDisp(d$plotData$cdata, d$plotData$cubeLine, hoverC, rv$halfRange, red = TRUE)
         output$tour <- plotly::renderPlotly(plotlyTour)
       }
       else{

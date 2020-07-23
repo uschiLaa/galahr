@@ -40,9 +40,6 @@ initializeReactive <- function(paramDF){
   rv$s <- NULL # plotly selected points
   rv$reloadScatter <- FALSE # when resetting from "selected only" need to reload scatter plot
   rv$update <- NULL
-  rv$npoint <- nrow(paramDF)
-  rv$numVars <- purrr::map_lgl(paramDF, is.numeric)
-  rv$groupVars <- purrr::map_lgl(paramDF, is.character)
   return(rv)
 }
 
@@ -53,8 +50,11 @@ initializeReactive <- function(paramDF){
 #' @keywords internal
 initializeData <- function(paramDF, numVars, groupVars){
   d <- list()
-  d$d <- paramDF[numVars]
-  d$groups <- paramDF[groupVars]
+  d$npoint <- nrow(paramDF)
+  d$numVars <- purrr::map_lgl(paramDF, is.numeric)
+  d$groupVars <- purrr::map_lgl(paramDF, is.character)
+  d$d <- paramDF[d$numVars]
+  d$groups <- paramDF[d$groupVars]
   return(d)
 }
 
@@ -116,8 +116,8 @@ formatProj <- function(proj, params, idx){
 #' @keywords internal
 plotData <- function(d, rv){
   ret <- list()
-  pdata <- (d$dataMatrix %*% rv$fullTour[[rv$t]])
-  cubePointProjOrig <- (rv$cubePoints %*% rv$fullTour[[rv$t]])
+  pdata <- (d$dataMatrix %*% d$fullTour[[rv$t]])
+  cubePointProjOrig <- (rv$cubePoints %*% d$fullTour[[rv$t]])
   centeredPoints <- centerAll(pdata, cubePointProjOrig)
   ret$cdata <- centeredPoints$data
   cubePointProj <- centeredPoints$cube
