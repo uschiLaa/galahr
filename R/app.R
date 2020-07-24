@@ -110,7 +110,7 @@ galahr <- function(paramDF = NULL) {
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })
-      shiny::invalidateLater(20)
+      shiny::invalidateLater(125)
 
     })
 

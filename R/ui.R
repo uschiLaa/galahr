@@ -66,7 +66,6 @@ ui <- function(params, npoint){
                                 choices = c("None")
                               )
       )
-    )
     ),
   shiny::column(
     width = 7,
@@ -116,5 +115,5 @@ ui <- function(params, npoint){
     shiny::conditionalPanel('input.displayType=="linked brushing"',
                             shiny::verbatimTextOutput("range")),
     shiny::verbatimTextOutput("projPrint")
-  ))
+  )))
 }
