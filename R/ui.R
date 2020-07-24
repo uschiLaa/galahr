@@ -10,6 +10,7 @@ ui <- function(params, npoint){
   shiny::fluidRow(
       shiny::column(
         width = 2,
+        shiny::br(),
         shiny::fileInput(
           "file1",
           "Parameter values (CSV format)",
@@ -55,17 +56,7 @@ ui <- function(params, npoint){
         ),
         shiny::numericInput("angle", "Angular step size",
                             0.05, min = 0.01, max = 1),
-        shiny::actionButton("updateTour", "Update results"),
-      shiny::selectInput("displayType", "Select display type",
-                         choices = c("groups", "density", "linked brushing"),
-                         selected = "density"),
-      shiny::conditionalPanel('input.displayType=="groups"',
-                              shiny::selectInput(
-                                "groupVar",
-                                "Grouping variable",
-                                choices = c("None")
-                              )
-      )
+        shiny::actionButton("updateTour", "Update results")
     ),
   shiny::column(
     width = 7,
@@ -80,40 +71,29 @@ ui <- function(params, npoint){
   ),
   shiny::column(
     width = 2,
-    shiny::actionButton("play", "Play"),
+    shiny::br(),
+    shiny::fluidRow(shiny::actionButton("play", "Play / Pause")),
+    shiny::br(),
     shiny::actionButton("save", "Save"),
     shiny::actionButton("print", "Print"),
     shiny::actionButton("saveAll", "Save anchor planes"),
-    shiny::conditionalPanel('input.displayType=="density"',
-                            shiny::numericInput(
-                              "alpha",
-                              label = "Select alpha",
-                              value = 1,
-                              min = 0.01,
-                              max = 1,
-                              step = 0.1
-                            )
-    ),
-    shiny::conditionalPanel('input.displayType=="linked brushing"',
-                            shiny::checkboxInput("selectedOnly",
-                                                 label = "Show selected points only",
-                                                 value = FALSE)
-    ),
-    shiny::conditionalPanel('input.displayType=="linked brushing"',
+    shiny::selectInput("displayType", "Select display type",
+                       choices = c("groups", "density"),
+                       selected = "density"),
+    shiny::conditionalPanel('input.displayType=="groups"',
                             shiny::selectInput(
-                              "selectionType",
-                              "Update with selection as",
-                              choices = c(
-                                "New only",
-                                "Both selections",
-                                "Overlapping set")
+                              "groupVar",
+                              "Grouping variable",
+                              choices = c("None")
                             )
+    ),
+    shiny::numericInput(
+      "alpha", label = "Select alpha",
+      value = 1, min = 0.01, max = 1, step = 0.1
     ),
     htmltools::div(style = "display:inline-block",
-                   plotly::plotlyOutput("axes", width = 200, height = 200)
+                   plotly::plotlyOutput("axes", width = 300, height = 300)
     ),
-    shiny::conditionalPanel('input.displayType=="linked brushing"',
-                            shiny::verbatimTextOutput("range")),
     shiny::verbatimTextOutput("projPrint")
   )))
 }
