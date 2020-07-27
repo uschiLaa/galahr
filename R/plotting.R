@@ -113,12 +113,15 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
   timelinePlot <- plotly::plot_ly(type = "scatter", mode = "markers", source = "TL") %>%
     plotly::add_trace(y = c(0.5), x = 1:maxT, #invisible markers for click events
                       mode = "markers", marker = getSmallMarker("black", a = 0),
+                      text = 1:maxT, hoverinfo = 'text',
                       type = "scatter") %>%
     plotly::add_trace(y = c(0.5), x = anchors,
                       mode = "markers", marker = getSmallMarker("red"),
+                      text = anchors, hoverinfo = 'text',
                       type = "scatter") %>%
     plotly::add_trace(y = c(0.5), x = c(current,current), #duplicating point to make restyle work
                       mode = "markers", marker = getSmallMarker("black"),
+                      text = "Current position", hoverinfo = 'text',
                       type = "scatter") %>%
     plotly::layout(xaxis=timelineAxis(maxT, breaks), yaxis = noAxisRange(0,1),
                    showlegend = FALSE, margin = plotlyMargin) %>%

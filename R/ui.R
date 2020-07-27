@@ -24,7 +24,8 @@ ui <- function(params, npoint){
           "parameters",
           label = "Choose parameters to display",
           choices = params,
-          selected = params[1:min(length(params),6)]
+          selected = params[1:min(length(params),6)],
+          inline = TRUE
         ),
         shiny::checkboxInput("rescale", "Rescale", value = TRUE),
         shiny::selectInput("tourType", "Select tour type",
@@ -61,11 +62,11 @@ ui <- function(params, npoint){
   shiny::column(
     width = 7,
     htmltools::div(style = "display:inline-block",
-                   plotly::plotlyOutput("tour", width = 750, height = 750)
+                   plotly::plotlyOutput("tour", width = 700, height = 700)
     ),
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("ggtimeline",
-                                        width = 750,
+                                        width = 700,
                                         height = 50)
     )
   ),

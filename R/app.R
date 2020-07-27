@@ -93,6 +93,12 @@ galahr <- function(paramDF = NULL) {
       if(rv$t==rv$tmax){rv$t <- 1}
     })
 
+    shiny::observeEvent(plotly::event_data("plotly_click", source = "TL"), {
+      d <- plotly::event_data("plotly_click", source = "TL")
+      rv$t <- d$x
+      updatePlots(rv, session, input, output)
+    })
+
     shiny::observe({
       if (!rv$on) {
         return()
