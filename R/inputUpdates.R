@@ -44,8 +44,4 @@ readInput <- function(file1, rv, output, session){
                              "groupVar",
                              choices = c("None"))
   }
-  shiny::updateNumericInput(session,
-                            "sampleSize",
-                            value = rv$npoint,
-                            max = rv$npoint)
 }

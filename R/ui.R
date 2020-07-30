@@ -1,10 +1,9 @@
 #' Generating the shiny ui.
 #'
 #' @param params The input parameters for parameter selection checkbox input.
-#' @param npoint The number of points in the input data set.
 #' @return The complete shiny fluidPage UI.
 #' @keywords internal
-ui <- function(params, npoint){
+ui <- function(params, grps){
   shiny::fluidPage(
   theme = shinythemes::shinytheme("simplex"),
   shiny::fluidRow(
@@ -85,7 +84,7 @@ ui <- function(params, npoint){
                             shiny::selectInput(
                               "groupVar",
                               "Grouping variable",
-                              choices = c("None")
+                              choices = grps
                             )
     ),
     shiny::numericInput(

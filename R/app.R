@@ -16,11 +16,17 @@ galahr <- function(paramDF = NULL) {
   }
 
   params <- names(paramDF)[purrr::map_lgl(paramDF, is.numeric)]
-  npoint <- nrow(paramDF)
 
   server <- function(input, output, session) {
 
     rv <- initializeReactive(paramDF)
+
+    shiny::observeEvent(input$file1, {
+      if (is.null(input$file1)) {
+        return()
+      }
+      readInput(input$file1, rv, output, session)
+    })
 
     shiny::observeEvent(c(input$updateTour, rv$update),
                         {
@@ -42,6 +48,15 @@ galahr <- function(paramDF = NULL) {
                           else {
                             rv$dataMatrix <-
                               as.matrix(rv$d[input$parameters])
+                          }
+                          if (sum(rv$groupVars)) {
+                            shiny::updateSelectInput(session,
+                                                     "groupVar",
+                                                     choices = names(rv$groups))}
+                          else {
+                            shiny::updateSelectInput(session,
+                                                     "groupVar",
+                                                     choices = c("None"))
                           }
 
                           rv$tourPlanes <-
@@ -122,5 +137,5 @@ galahr <- function(paramDF = NULL) {
 
   }
 
-  shiny::shinyApp(ui(params, npoint), server)
+  shiny::shinyApp(ui(params, c("None")), server)
 }
