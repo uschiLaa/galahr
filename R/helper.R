@@ -7,24 +7,16 @@ isEven <- function(x){
   x %% 2 == 0
 }
 
-#' Combined centering for projected data and cube points
-#'
-#' For each view we center all points to be drawn.
+#' Centering for projected data points
 #'
 #' @param dPoints Projected data points (matrix)
-#' @param cPoints Projected hypercube points (matrix)
-#' @return Named list containint the centered data points ("data")
-#'     and cube points ("cube")
 #' @export
-centerAll <- function(dPoints, cPoints){
-  m1 <- mean(c(dPoints[,1], cPoints[,1]))
-  m2 <- mean(c(dPoints[,2], cPoints[,2]))
-  dPoints[,1] <- dPoints[,1] - m1
-  dPoints[,2] <- dPoints[,2] - m2
-  cPoints[,1] <- cPoints[,1] - m1
-  cPoints[,2] <- cPoints[,2] - m2
-  centeredPoints <- list("data" = dplyr::as_tibble(dPoints),
-                         "cube" = dplyr::as_tibble(cPoints))
+centerData <- function(dPoints){
+  m1 <- mean(dPoints[,1])
+  m2 <- mean(dPoints[,2])
+  x <- dPoints[,1] - m1
+  y <- dPoints[,2] - m2
+  dplyr::tibble(V1 = x, V2 = y)
 }
 
 #' Initialising the reactive values used in the app.
@@ -63,23 +55,6 @@ hoverText <- function(d, p){
   return(hoverTextDf)
 }
 
-#' Generate vertices on hypercube enclosing all data points.
-#'
-#' @param n Number of parameters in the input data.
-#' @param d Input data (numeric matrix).
-#' @return Data frame containing all vertices of the hypercube
-#' @export
-cubePoints <- function(n, d){
-  nCube <- geozoo::cube.iterate(n) #initialise
-  cubeSidesLow <- apply(d,2,min)
-  cubeSidesUp <- apply(d,2,max)
-  cubeSideLength <- cubeSidesUp - cubeSidesLow
-  cubePoints <- nCube$points %*%
-    diag(cubeSideLength) %>%
-    sweep(2,as.matrix(cubeSidesLow),"+",check.margin = FALSE)
-  return(cubePoints)
-}
-
 #' Formatting projection matrix for screen printout.
 #'
 #' @param proj Projection matrix to be formatted
@@ -103,14 +78,7 @@ formatProj <- function(proj, params, idx){
 #' @param rv Reactive value container
 #' @keywords internal
 updateReactiveData <- function(rv){
-  rv$cdata <- (rv$dataMatrix %*% rv$fullTour[[rv$t]])
-  rv$cubePointProjOrig <- (rv$cubePoints %*% rv$fullTour[[rv$t]])
-  centeredPoints <- centerAll(rv$cdata, rv$cubePointProjOrig)
-  rv$cdata <- centeredPoints$data
-  cubePointProj <- centeredPoints$cube
-  chidx <- grDevices::chull(cubePointProj)
-  rv$cubeLine <- (cubePointProj[c(chidx, chidx[1]),])
-
+  rv$cdata <- centerData(rv$dataMatrix %*% rv$fullTour[[rv$t]])
 }
 
 #' PCA over the projection vectors in the tour sequence.

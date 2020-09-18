@@ -7,15 +7,11 @@
 #' @param red Logical, if TRUE use red markers for the scatter points
 #' @return Plotly visualisation
 #' @export
-plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
+plotlyTourF <- function(scatterData, hoverData, halfRange, red=FALSE){
   if(red){scatterM <- getMarker("red")}
   else{scatterM <- getMarker("black")}
   tAxis <- tourAxis(halfRange)
   pRet <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
-    # first trace is line connecting cube points
-    plotly::add_trace(data = cubeData, x=~V1, y=~V2, inherit = FALSE,
-                      type = "scatter", mode="lines", line=cubeLineStyle) %>%
-    #second trace is scatter plot of projected data points
     plotly::add_trace(data = scatterData, x=~V1, y=~V2, type = "scatter",
                       marker=scatterM, mode="markers", inherit = FALSE,
                       text = paste(hoverData$paramT, sep="\n"),
@@ -46,8 +42,7 @@ updateGroups <- function(rv, session, input){
     a <- customLegend(labs, colrs, rv$halfRange)
   }
   plotly::plotlyProxy("tour",session) %>%
-    plotly::plotlyProxyInvoke("restyle", marker.color = list(markers),
-                              list(2)) %>%
+    plotly::plotlyProxyInvoke("restyle", marker.color = list(markers)) %>%
     plotly::plotlyProxyInvoke("relayout", annotations=a)
 }
 
@@ -58,8 +53,7 @@ updateGroups <- function(rv, session, input){
 #' @keywords internal
 updateAlpha <- function(session, input){
   plotly::plotlyProxy("tour",session) %>%
-    plotly::plotlyProxyInvoke("restyle", marker.opacity = list(input$alpha),
-                              list(2))
+    plotly::plotlyProxyInvoke("restyle", marker.opacity = list(input$alpha))
 }
 
 #' Generating the plotly axes display.
@@ -145,12 +139,7 @@ updatePlots <- function(rv, session, input, output){
   plotly::plotlyProxy("tour",session) %>%
     plotly::plotlyProxyInvoke("restyle",
                               list(x = list(rv$cdata$V1),
-                                   y = list(rv$cdata$V2)),
-                              list(2)) %>%
-    plotly::plotlyProxyInvoke("restyle",
-                              list(x = list(rv$cubeLine$V1),
-                                   y = list(rv$cubeLine$V2)),
-                              list(1))
+                                   y = list(rv$cdata$V2)))
 
   #reminder: restyle only works for more than one point in the trace
   plotly::plotlyProxy("ggtimeline",session) %>%

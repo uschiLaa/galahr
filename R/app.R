@@ -28,7 +28,7 @@ galahr <- function(paramDF = NULL) {
       readInput(input$file1, rv, output, session)
     })
 
-    shiny::observeEvent(c(input$updateTour, rv$update),
+    shiny::observeEvent(input$updateTour,
                         {
                           #get data, list of projections and set reactive values
                           output$messages <- shiny::renderText(shiny::validate(
@@ -79,18 +79,14 @@ galahr <- function(paramDF = NULL) {
                                 rv$anchors, 1, rv$tmax, rv$timelineAxis, rv$pathIndex
                               )
                             )
-                          # get points on hypercube
-                          rv$cubePoints <-
-                            cubePoints(length(input$parameters), rv$dataMatrix)
-                          # calculate projected data and cube points
-                          # for first projection
+                          # data for first projection
                           updateReactiveData(rv)
                           #hover text should contain all function and parameter values
                           hoverTextDf <- hoverText(rv$d, input$parameters)
                           rv$halfRange <-
                             compute_half_range(NULL, rv$dataMatrix, TRUE) * 1.3
                           plotlyTour <-
-                              plotlyTourF(rv$cdata, rv$cubeLine,
+                              plotlyTourF(rv$cdata,
                                           hoverTextDf, rv$halfRange)
                           output$tour <- plotly::renderPlotly(plotlyTour)
                           # final step: draw axes display
@@ -101,7 +97,7 @@ galahr <- function(paramDF = NULL) {
                           output$axes <- plotly::renderPlotly(plotlyAxes)
                           rv$init <- TRUE
                           output$messages <- shiny::renderText("Results updated with current selection")
-                        })
+                        }, ignoreNULL = FALSE, ignoreInit = FALSE, priority = 99)
 
     shiny::observeEvent(input$play, {
       rv$on <- !rv$on
