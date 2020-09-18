@@ -115,8 +115,9 @@ galahr <- function(paramDF = NULL) {
     })
 
     shiny::observeEvent(input$groupVar, {
+      updateGroups(rv, session, input)
       # function that changes point colors and adds legend as annotation
-    })
+    }, ignoreInit = TRUE)
 
     shiny::observe({
       if (!rv$on) {

@@ -26,37 +26,35 @@ plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
   return(pRet)
 }
 
-#' Generating the plotly tour display for grouped data.
+#' Update all plots to current projection.
 #'
-#' @param scatterData Projected data points (matrix)
-#' @param cubeData Projected hypercube points (matrix)
-#' @param hoverData Data frame containing hover text in "paramT" column
-#' @param halfRange Half range for fixing axis lenght
-#' @param gr Vector containing group assignment for each data entry
-#' @return Plotly visualisation
-#' @export
-plotlyTourGrouped <- function(scatterData, cubeData, hoverData, halfRange, gr){
-  tAxis <- tourAxis(halfRange)
-  labs <- unique(gr)
-  markers <- colorList(gr)
-  colrs <- markers$col # store colors for writing legend
-  a <- customLegend(labs, colrs, halfRange)
-  markers$col <- NULL # remove color list, now markers only contains marker color for each point
-  pRet <- plotly::plot_ly(type = "scatter", mode = "markers") %>%
-    # first trace is line connecting cube points
-    plotly::add_trace(data = cubeData, x=~V1, y=~V2, inherit = FALSE,
-                      type = "scatter", mode="lines", line=cubeLineStyle,
-                      showlegend = FALSE) %>%
-    #second trace is scatter plot of projected data points with custom marker list for grouping
-    plotly::add_trace(data = scatterData, x=~V1, y=~V2, type = "scatter",
-                      mode="markers", inherit = FALSE, marker=markers,
-                      text = paste(hoverData$paramT, sep="\n"),
-                      hoverinfo = 'text', showlegend = FALSE) %>%
-    plotly::layout(dragmode = "select", xaxis=tAxis, yaxis=tAxis, annotations=a) %>%
-    plotly::toWebGL()
+#' @param rv Reactive value container
+#' @param session shiny session
+#' @param input shiny input container
+#' @param output shiny output container
+#' @keywords internal
+updateGroups <- function(rv, session, input){
+  if(input$groupVar == "None") {
+    markers <- "black"
+    a <- NULL
+  }
+  else {
+    gr <- rv$groups[[input$groupVar]]
+    labs <- unique(gr)
+    markers <- colorList(gr)
+    colrs <- markers$col # store colors for writing legend
+    a <- customLegend(labs, colrs, rv$halfRange)
+    markers$col <- NULL # remove color list, now markers only contains marker color for each point
+  }
+  plotly::plotlyProxy("tour",session) %>%
+    plotly::plotlyProxyInvoke("restyle", marker.color = list(markers$color),
+                              list(2)) %>%
+    plotly::plotlyProxyInvoke("relayout", annotations=a)
 
-  return(pRet)
 }
+
+
+
 
 #' Generating the plotly axes display.
 #'
