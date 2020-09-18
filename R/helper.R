@@ -38,6 +38,39 @@ initializeReactive <- function(paramDF){
   return(rv)
 }
 
+#' Rescale data if selected.
+#'
+#' @param rv Reactive value container
+#' @param input shiny input container
+#' @keywords internal
+rescale <- function(rv, input){
+  if (input$rescale){
+    rv$dataMatrix <-
+      tourr::rescale(as.matrix(rv$d[input$parameters]))
+  }
+  else {
+    rv$dataMatrix <-
+      as.matrix(rv$d[input$parameters])
+  }
+}
+
+#' Update all plots to current projection.
+#'
+#' @param rv Reactive value container
+#' @param session shiny session
+#' @keywords internal
+updateGroupVars <- function(rv, session){
+  if (sum(rv$groupVars)) {
+    shiny::updateSelectInput(session,
+                             "groupVar",
+                             choices = c("None", names(rv$groups)))}
+  else {
+    shiny::updateSelectInput(session,
+                             "groupVar",
+                             choices = c("None"))
+  }
+}
+
 #' Generate hover text for each data point.
 #'
 #' @param d Data frame containing input data
@@ -157,3 +190,32 @@ mineIndex <- function(mineIndex){
   }
 }
 
+
+getTour <- function(rv, input){
+  if(input$tourType == "Grand tour"){
+    rv$tourPlanes <-
+      tourr::save_history(rv$dataMatrix,
+                          tourr::grand_tour(),
+                          max_bases = input$nPlanes,
+                          rescale = FALSE)
+  }
+  else if(input$tourType == "Little tour"){
+    rv$tourPlanes <-
+      tourr::save_history(rv$dataMatrix,
+                          tourr::little_tour(),
+                          max_bases = input$nPlanes,
+                          rescale = FALSE)
+  }
+  else if(input$tourType == "Guided tour"){
+    rv$tourPlanes <-
+      tourr::save_history(
+        rv$dataMatrix, getGuidedTour(input$tourIndex), rescale = FALSE
+      )
+    }
+  fullTour <- tourr::interpolate(
+    rv$tourPlanes, angle = input$angle
+  )
+  rv$anchors <- which(attributes(fullTour)$new_basis)
+  rv$fullTour <- as.list(fullTour)
+  rv$tmax <- length(rv$fullTour)
+}

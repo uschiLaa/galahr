@@ -41,36 +41,10 @@ galahr <- function(paramDF = NULL) {
                             return()
                           }
 
-                          if (input$rescale){
-                            rv$dataMatrix <-
-                              tourr::rescale(as.matrix(rv$d[input$parameters]))
-                          }
-                          else {
-                            rv$dataMatrix <-
-                              as.matrix(rv$d[input$parameters])
-                          }
-                          if (sum(rv$groupVars)) {
-                            shiny::updateSelectInput(session,
-                                                     "groupVar",
-                                                     choices = c("None", names(rv$groups)))}
-                          else {
-                            shiny::updateSelectInput(session,
-                                                     "groupVar",
-                                                     choices = c("None"))
-                          }
+                          rescale(rv, input) # rescale data if requested
+                          updateGroupVars(rv, session) # pass current groupVars to select input
+                          getTour(rv, input) # compute interpolated tour
 
-                          rv$tourPlanes <-
-                              tourr::save_history(rv$dataMatrix,
-                                                  tourr::grand_tour(),
-                                                  max_bases = input$nPlanes,
-                                                  rescale = FALSE)
-                          rv$pathIndex <- NULL
-                          fullTour <- tourr::interpolate(
-                            rv$tourPlanes, angle = input$angle
-                          )
-                          rv$anchors <- which(attributes(fullTour)$new_basis)
-                          rv$fullTour <- as.list(fullTour)
-                          rv$tmax <- length(rv$fullTour)
                           rv$t <- 1
                           rv$timelineAxis <- pretty(c(1, rv$tmax))
                           output$ggtimeline <-
@@ -137,7 +111,7 @@ galahr <- function(paramDF = NULL) {
         if (rv$t == rv$tmax) {rv$stop <- TRUE}
         else{rv$t <- rv$t + 1}
       })
-      shiny::invalidateLater(125)
+      shiny::invalidateLater(130)
 
     })
 

@@ -98,6 +98,7 @@ ui <- function(params, grps){
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("axes", width = 200, height = 200)
     ),
+   titlePanel("Output options"),
     shiny::actionButton("save", "Save"),
     shiny::actionButton("print", "Print"),
     shiny::actionButton("saveAll", "Save anchor planes"),
