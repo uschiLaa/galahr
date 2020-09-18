@@ -10,6 +10,7 @@ ui <- function(params, grps){
       shiny::column(
         width = 2,
         shiny::br(),
+        titlePanel("Input options"),
         shiny::fileInput(
           "file1",
           "Parameter values (CSV format)",
@@ -58,33 +59,38 @@ ui <- function(params, grps){
                             0.05, min = 0.01, max = 1),
         shiny::actionButton("updateTour", "Update results")
     ),
+
+
   shiny::column(
+    shiny::br(),
+    shiny::br(),
+    shiny::br(),
+
     width = 7,
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("tour", width = 700, height = 700)
     ),
-    htmltools::div(style = "display:inline-block",
+    shiny::fluidRow(shiny::actionButton("play", "", icon = icon("play"), width = "40px"),
+    htmltools::div(style = "display:inline-block;vertical-align:top",
                    plotly::plotlyOutput("ggtimeline",
-                                        width = 700,
+                                        width = 600,
                                         height = 50)
-    )
+    )), align="center"
   ),
+
+
+
   shiny::column(
     width = 2,
     shiny::br(),
-    shiny::fluidRow(shiny::actionButton("play", "Play / Pause")),
+    titlePanel("Display options"),
     shiny::br(),
-    shiny::actionButton("save", "Save"),
-    shiny::actionButton("print", "Print"),
-    shiny::actionButton("saveAll", "Save anchor planes"),
     shiny::selectInput("displayType", "Select display type",
-                       choices = c("groups", "density"),
-                       selected = "density"),
-    shiny::conditionalPanel('input.displayType=="groups"',
-                            shiny::selectInput(
-                              "groupVar",
-                              "Grouping variable",
-                              choices = grps
+                       choices = c("xy", "slice", "sage"),
+                       selected = "xy"),
+   shiny::selectInput("groupVar",
+                      "Grouping variable",
+                      choices = grps
                             )
     ),
     shiny::numericInput(
@@ -92,8 +98,11 @@ ui <- function(params, grps){
       value = 1, min = 0.01, max = 1, step = 0.1
     ),
     htmltools::div(style = "display:inline-block",
-                   plotly::plotlyOutput("axes", width = 300, height = 300)
+                   plotly::plotlyOutput("axes", width = 200, height = 200)
     ),
+    shiny::actionButton("save", "Save"),
+    shiny::actionButton("print", "Print"),
+    shiny::actionButton("saveAll", "Save anchor planes"),
     shiny::verbatimTextOutput("projPrint")
-  )))
+  ))
 }

@@ -52,7 +52,7 @@ galahr <- function(paramDF = NULL) {
                           if (sum(rv$groupVars)) {
                             shiny::updateSelectInput(session,
                                                      "groupVar",
-                                                     choices = names(rv$groups))}
+                                                     choices = c("None", names(rv$groups)))}
                           else {
                             shiny::updateSelectInput(session,
                                                      "groupVar",
@@ -112,6 +112,10 @@ galahr <- function(paramDF = NULL) {
       d <- plotly::event_data("plotly_click", source = "TL")
       rv$t <- d$x
       updatePlots(rv, session, input, output)
+    })
+
+    shiny::observeEvent(input$groupVar, {
+      # function that changes point colors and adds legend as annotation
     })
 
     shiny::observe({
