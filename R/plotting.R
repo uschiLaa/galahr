@@ -44,7 +44,6 @@ updateGroups <- function(rv, session, input){
     colrs <- markers$col # store colors for writing legend
     markers <- markers$color
     a <- customLegend(labs, colrs, rv$halfRange)
-    markers$col <- NULL # remove color list, now markers only contains marker color for each point
   }
   plotly::plotlyProxy("tour",session) %>%
     plotly::plotlyProxyInvoke("restyle", marker.color = list(markers),
