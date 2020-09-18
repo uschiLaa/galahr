@@ -26,12 +26,11 @@ plotlyTourF <- function(scatterData, cubeData, hoverData, halfRange, red=FALSE){
   return(pRet)
 }
 
-#' Update all plots to current projection.
+#' Update marker color to selected grouping.
 #'
 #' @param rv Reactive value container
 #' @param session shiny session
 #' @param input shiny input container
-#' @param output shiny output container
 #' @keywords internal
 updateGroups <- function(rv, session, input){
   if(input$groupVar == "None") {
@@ -43,18 +42,26 @@ updateGroups <- function(rv, session, input){
     labs <- unique(gr)
     markers <- colorList(gr)
     colrs <- markers$col # store colors for writing legend
+    markers <- markers$color
     a <- customLegend(labs, colrs, rv$halfRange)
     markers$col <- NULL # remove color list, now markers only contains marker color for each point
   }
   plotly::plotlyProxy("tour",session) %>%
-    plotly::plotlyProxyInvoke("restyle", marker.color = list(markers$color),
+    plotly::plotlyProxyInvoke("restyle", marker.color = list(markers),
                               list(2)) %>%
     plotly::plotlyProxyInvoke("relayout", annotations=a)
-
 }
 
-
-
+#' Update marker alpha as selected.
+#'
+#' @param session shiny session
+#' @param input shiny input container
+#' @keywords internal
+updateAlpha <- function(session, input){
+  plotly::plotlyProxy("tour",session) %>%
+    plotly::plotlyProxyInvoke("restyle", marker.opacity = list(input$alpha),
+                              list(2))
+}
 
 #' Generating the plotly axes display.
 #'

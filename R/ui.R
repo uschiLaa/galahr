@@ -90,9 +90,7 @@ ui <- function(params, grps){
                        selected = "xy"),
    shiny::selectInput("groupVar",
                       "Grouping variable",
-                      choices = grps
-                            )
-    ),
+                      choices = grps),
     shiny::numericInput(
       "alpha", label = "Select alpha",
       value = 1, min = 0.01, max = 1, step = 0.1
@@ -104,5 +102,5 @@ ui <- function(params, grps){
     shiny::actionButton("print", "Print"),
     shiny::actionButton("saveAll", "Save anchor planes"),
     shiny::verbatimTextOutput("projPrint")
-  ))
+  )))
 }

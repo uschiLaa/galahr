@@ -119,6 +119,11 @@ galahr <- function(paramDF = NULL) {
       # function that changes point colors and adds legend as annotation
     }, ignoreInit = TRUE)
 
+    shiny::observeEvent(input$alpha, {
+      updateAlpha(session, input)
+      # function that changes alpha
+    }, ignoreInit = TRUE)
+
     shiny::observe({
       if (!rv$on) {
         return()
