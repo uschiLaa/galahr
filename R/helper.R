@@ -110,8 +110,30 @@ formatProj <- function(proj, params, idx){
 #'
 #' @param rv Reactive value container
 #' @keywords internal
-updateReactiveData <- function(rv){
-  rv$cdata <- centerData(rv$dataMatrix %*% rv$fullTour[[rv$t]])
+updateReactiveData <- function(rv, input){
+  rv$alpha <- rep(1, nrow(rv$dataMatrix))
+  if (input$displayType == "xy"){
+    rv$cdata <- centerData(rv$dataMatrix %*% rv$fullTour[[rv$t]])
+  }
+  else if (input$displayType == "slice"){
+    d <- tourr::anchored_orthogonal_distance(rv$fullTour[[rv$t]], rv$dataMatrix)
+    rv$alpha[d > input$h] <- input$alpha
+    rv$cdata <- centerData(rv$dataMatrix %*% rv$fullTour[[rv$t]])
+  }
+  else if (input$displayType == "sage"){
+    x <- rv$dataMatrix %*% rv$fullTour[[rv$t]]
+    rad <- sqrt(x[,1]^2+x[,2]^2)
+    ang <- atan2(x[,2], x[,1])
+    rad <- pmin(rad, input$R)
+    # transform with cumulative to get uniform distribution in radius
+    rad <- tourr:::cumulative_radial(rad, input$R, input$gamma * ncol(rv$dataMatrix))
+    # square-root is the inverse of the cumulative of a uniform disk (rescaling to maximum radius = 1)
+    rad <- sqrt(rad)
+    # transform back to x, y coordinates
+    x[,1] <- rad * cos(ang)
+    x[,2] <- rad * sin(ang)
+    rv$cdata <- centerData(x)
+  }
 }
 
 #' PCA over the projection vectors in the tour sequence.

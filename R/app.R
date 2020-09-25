@@ -54,7 +54,7 @@ galahr <- function(paramDF = NULL) {
                               )
                             )
                           # data for first projection
-                          updateReactiveData(rv)
+                          updateReactiveData(rv, input)
                           #hover text should contain all function and parameter values
                           hoverTextDf <- hoverText(rv$d, input$parameters)
                           rv$halfRange <-
@@ -89,10 +89,10 @@ galahr <- function(paramDF = NULL) {
       # function that changes point colors and adds legend as annotation
     }, ignoreInit = TRUE)
 
-    shiny::observeEvent(input$alpha, {
-      updateAlpha(session, input)
-      # function that changes alpha
-    }, ignoreInit = TRUE)
+    shiny::observeEvent(c(input$displayType, input$alpha, input$gamma, input$R, input$h), {
+      shiny::isolate({
+        updatePlots(rv, session, input, output)})
+    })
 
     shiny::observe({
       if (!rv$on) {

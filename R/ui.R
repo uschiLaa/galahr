@@ -22,7 +22,7 @@ ui <- function(params, grps){
         ),
         shiny::checkboxGroupInput(
           "parameters",
-          label = "Choose parameters to display",
+          label = "Choose variables to display",
           choices = params,
           selected = params[1:min(length(params),6)],
           inline = TRUE
@@ -91,10 +91,22 @@ ui <- function(params, grps){
    shiny::selectInput("groupVar",
                       "Grouping variable",
                       choices = grps),
-    shiny::numericInput(
-      "alpha", label = "Select alpha",
-      value = 1, min = 0.01, max = 1, step = 0.1
-    ),
+   shiny::conditionalPanel('input.displayType=="slice"', shiny::numericInput(
+      "alpha", label = "Select alpha outside slice",
+      value = 0.5, min = 0.01, max = 1, step = 0.1
+    )),
+   shiny::conditionalPanel('input.displayType=="slice"', shiny::numericInput(
+     "h", label = "Select slice thickness",
+     value = 1
+   )),
+   shiny::conditionalPanel('input.displayType=="sage"', shiny::numericInput(
+     "gamma", label = "Select gamma",
+     value = 1
+   )),
+   shiny::conditionalPanel('input.displayType=="sage"', shiny::numericInput(
+     "R", label = "Select R",
+     value = 1
+   )),
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("axes", width = 200, height = 200)
     ),

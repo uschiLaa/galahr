@@ -135,11 +135,12 @@ ggtimeline <- function(anchors, current, maxT, breaks, indexVals=NULL){
 #' @param output shiny output container
 #' @keywords internal
 updatePlots <- function(rv, session, input, output){
-  updateReactiveData(rv)
+  updateReactiveData(rv, input)
   plotly::plotlyProxy("tour",session) %>%
     plotly::plotlyProxyInvoke("restyle",
                               list(x = list(rv$cdata$V1),
-                                   y = list(rv$cdata$V2)))
+                                   y = list(rv$cdata$V2))) %>%
+    plotly::plotlyProxyInvoke("restyle", marker.opacity = list(rv$alpha))
 
   #reminder: restyle only works for more than one point in the trace
   plotly::plotlyProxy("ggtimeline",session) %>%
