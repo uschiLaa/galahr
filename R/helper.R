@@ -121,7 +121,7 @@ updateReactiveData <- function(rv, input){
     rv$cdata <- centerData(rv$dataMatrix %*% rv$fullTour[[rv$t]])
   }
   else if (input$displayType == "sage"){
-    x <- rv$dataMatrix %*% rv$fullTour[[rv$t]]
+    x <- tourr::center(rv$dataMatrix %*% rv$fullTour[[rv$t]])
     rad <- sqrt(x[,1]^2+x[,2]^2)
     ang <- atan2(x[,2], x[,1])
     rad <- pmin(rad, input$R)
