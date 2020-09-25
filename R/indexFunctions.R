@@ -1,23 +1,15 @@
 #' List of names for all available guided tour index functions.
 #'
 #' @keywords internal
-guidedTourOptions <- c("cmass", "holes")
+guidedTourOptions <- c("cmass", "holes", "splines2d", "dcor2d", "lda_pp", "pda_pp")
 if (requireNamespace("binostics", quietly = TRUE)) {
   guidedTourOptions <- c(
     guidedTourOptions, "Skinny", "Striated", "Convex", "Clumpy"
     )
 }
-if (requireNamespace("mbgraphic", quietly = TRUE)) {
-  guidedTourOptions <- c(guidedTourOptions, "splines2d", "dcor2d")
-}
 if (requireNamespace("minerva", quietly = TRUE)) {
   guidedTourOptions <- c(guidedTourOptions, "MIC", "TIC")
 }
-
-#' List of names for all available guided tour index functions with grouping.
-#'
-#' @keywords internal
-groupedIndex <- c("lda_pp", "pda_pp")
 
 #' Taking guided tour index name and returning corresponding guided tour
 #'
@@ -35,21 +27,21 @@ getGuidedTour <- function(indexName, grId=NA){
     return(
       tourr::guided_tour(tourr::holes())
     )
-    }
+  }
+  if (indexName=="splines2d") {
+    return(
+      tourr::guided_tour(tourr::splines2d())
+    )
+  }
+  if (indexName=="dcor2d") {
+    return(
+      tourr::guided_tour(tourr::dcor2d())
+    )
+  }
   if (indexName %in% c("Skinny", "Striated", "Convex", "Clumpy")){
     return(
       tourr::guided_tour(scags(indexName))
       )
-    }
-  if (indexName=="splines2d"){
-    return(
-      tourr::guided_tour(splineIndex())
-    )
-    }
-  if (indexName=="dcor2d"){
-    return(
-      tourr::guided_tour(dcorIndex())
-    )
     }
   if (indexName %in% c("MIC","TIC")){
     return(

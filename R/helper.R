@@ -106,7 +106,7 @@ formatProj <- function(proj, params, idx){
   return(txt)
 }
 
-#' Updating relevant reactive values.
+#' Updating data for plotting in reactive values.
 #'
 #' @param rv Reactive value container
 #' @keywords internal

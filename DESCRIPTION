@@ -37,7 +37,6 @@ Imports:
 Suggests:
     minerva,
     binostics,
-    mbgraphic,
     knitr,
     rmarkdown
 RoxygenNote: 6.1.1
