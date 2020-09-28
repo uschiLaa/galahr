@@ -95,6 +95,11 @@ galahr <- function(paramDF = NULL) {
         updatePlots(rv, session, input, output)})
     })
 
+    shiny::observeEvent(input$zoom, {
+      updateHalfRange(rv, session, input)
+      # function that changes point colors and adds legend as annotation
+    }, ignoreInit = TRUE)
+
     shiny::observe({
       if (!rv$on) {
         return()

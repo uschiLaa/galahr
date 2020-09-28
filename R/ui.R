@@ -92,6 +92,7 @@ ui <- function(params, grps){
    shiny::selectInput("groupVar",
                       "Grouping variable",
                       choices = grps),
+   shiny::sliderInput("zoom", "Zoom", min=0.1, max=10, value = 1),
    shiny::conditionalPanel('input.displayType=="slice"', shiny::numericInput(
       "alpha", label = "Select alpha outside slice",
       value = 0.5, min = 0.01, max = 1, step = 0.1

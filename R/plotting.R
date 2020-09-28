@@ -46,6 +46,19 @@ updateGroups <- function(rv, session, input){
     plotly::plotlyProxyInvoke("relayout", annotations=a)
 }
 
+#' Update axis range for zooming.
+#'
+#' @param rv Reactive value container
+#' @param session shiny session
+#' @param input shiny input container
+#' @keywords internal
+updateHalfRange <- function(rv, session, input){
+  newAxis <- tourAxis(rv$halfRange * input$zoom)
+  plotly::plotlyProxy("tour",session) %>%
+    plotly::plotlyProxyInvoke("relayout", xaxis = newAxis) %>%
+    plotly::plotlyProxyInvoke("relayout", yaxis = newAxis)
+}
+
 #' Update marker alpha as selected.
 #'
 #' @param session shiny session
