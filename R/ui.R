@@ -99,15 +99,15 @@ ui <- function(params, grps){
     )),
    shiny::conditionalPanel('input.displayType=="slice"', shiny::numericInput(
      "h", label = "Select slice thickness",
-     value = 1
+     value = 1, min = 0
    )),
    shiny::conditionalPanel('input.displayType=="sage"', shiny::numericInput(
      "gamma", label = "Select gamma",
-     value = 1
+     value = 1, min = 0
    )),
    shiny::conditionalPanel('input.displayType=="sage"', shiny::numericInput(
      "R", label = "Select R",
-     value = 1
+     value = 1, min = 0
    )),
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("axes", width = 200, height = 200)
