@@ -31,6 +31,7 @@ galahr <- function(paramDF = NULL) {
     shiny::observeEvent(input$updateTour,
                         {
                           #get data, list of projections and set reactive values
+                          #FIXME where does this go??
                           output$messages <- shiny::renderText(shiny::validate(
                             shiny::need(
                               length(input$parameters) > 2,

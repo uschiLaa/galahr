@@ -58,6 +58,7 @@ ui <- function(params, grps){
         shiny::numericInput("angle", "Angular step size",
                             0.05, min = 0.01, max = 1),
         shiny::actionButton("updateTour", "Update results")
+        #shiny::textOutput("tourOut")
     ),
 
 

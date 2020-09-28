@@ -233,7 +233,13 @@ getTour <- function(rv, input){
       tourr::save_history(
         rv$dataMatrix, getGuidedTour(input$tourIndex), rescale = FALSE
       )
-    }
+  }
+  else if(input$tourType == "Local tour"){
+    rv$tourPlanes <-
+      tourr::save_history(
+        rv$dataMatrix, tourr::local_tour(rv$fullTour[[rv$t]]), rescale = FALSE
+      )
+  }
   fullTour <- tourr::interpolate(
     rv$tourPlanes, angle = input$angle
   )
