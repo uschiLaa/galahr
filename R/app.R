@@ -121,6 +121,29 @@ galahr <- function(paramDF = NULL) {
 
     })
 
+    output$downloadData <- downloadHandler(
+      filename = function() {
+        paste(input$dataset, ".csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(datasetInput(), file, row.names = FALSE)
+      }
+    )
+
+    output$savePlanes <- downloadHandler(
+      filename = "anchor_planes.rds",
+      content = function(file) {
+        saveRDS(rv$tourPlanes, file)
+      }
+    )
+
+    output$saveGif <- downloadHandler(
+      filename = "tour_animation.gif",
+      content = function(file) {
+        tourr::render_gif(rv$dataMatrix, rv$tourPlanes, file)
+      }
+    )
+
   }
 
   shiny::shinyApp(ui(params, c("None")), server)

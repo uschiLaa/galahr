@@ -10,7 +10,7 @@ ui <- function(params, grps){
       shiny::column(
         width = 2,
         shiny::br(),
-        titlePanel("Input options"),
+        shiny::titlePanel("Input options"),
         shiny::fileInput(
           "file1",
           "Parameter values (CSV format)",
@@ -71,7 +71,7 @@ ui <- function(params, grps){
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("tour", width = 700, height = 700)
     ),
-    shiny::fluidRow(shiny::actionButton("play", "", icon = icon("play"), width = "40px"),
+    shiny::fluidRow(shiny::actionButton("play", "", icon = shiny::icon("play"), width = "40px"),
     htmltools::div(style = "display:inline-block;vertical-align:top",
                    plotly::plotlyOutput("ggtimeline",
                                         width = 600,
@@ -84,7 +84,7 @@ ui <- function(params, grps){
   shiny::column(
     width = 2,
     shiny::br(),
-    titlePanel("Display options"),
+    shiny::titlePanel("Display options"),
     shiny::br(),
     shiny::selectInput("displayType", "Select display type",
                        choices = c("xy", "slice", "sage"),
@@ -112,10 +112,8 @@ ui <- function(params, grps){
     htmltools::div(style = "display:inline-block",
                    plotly::plotlyOutput("axes", width = 200, height = 200)
     ),
-   titlePanel("Output options"),
-    shiny::actionButton("save", "Save"),
-    shiny::actionButton("print", "Print"),
-    shiny::actionButton("saveAll", "Save anchor planes"),
-    shiny::verbatimTextOutput("projPrint")
+   shiny::titlePanel("Output options"),
+   shiny::downloadButton("savePlanes", "Download anchor planes (RDS)"),
+   shiny::downloadButton("saveGif", "Download tour animation (gif)")
   )))
 }
