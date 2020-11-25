@@ -229,9 +229,11 @@ getTour <- function(rv, input){
                           rescale = FALSE)
   }
   else if(input$tourType == "Guided tour"){
+    if(input$groupVar == "None") grV <- NA
+    else grV <- rv$groups[[input$groupVar]]
     rv$tourPlanes <-
       tourr::save_history(
-        rv$dataMatrix, getGuidedTour(input$tourIndex), rescale = FALSE
+        rv$dataMatrix, getGuidedTour(input$tourIndex, grV), rescale = FALSE
       )
   }
   else if(input$tourType == "Local tour"){

@@ -49,13 +49,11 @@ getGuidedTour <- function(indexName, grId=NA){
       )
     }
   if (indexName=="lda_pp"){
-    return(tourr::guided_tour(tourr::lda_pp(grId))
+    if(!is.na(grId)) return(tourr::guided_tour(tourr::lda_pp(grId))
     )
     }
   if (indexName=="pda_pp"){
-    return(
-      tourr::guided_tour(tourr::pda_pp(grId))
-    )
+    if(!is.na(grId)) return(tourr::guided_tour(tourr::pda_pp(grId)))
   }
   # default behaviour if index not found
   return(
